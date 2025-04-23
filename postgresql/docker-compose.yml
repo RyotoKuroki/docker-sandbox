@@ -1,0 +1,32 @@
+# Use postgres/example user/password credentials
+version: '3.9'
+
+services:
+
+  db:
+#   image: postgres
+    image: postgres
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    container_name: postgres-jsx
+    # ポート変換　inner: 5432 -> outer:5438 (can access by localhost:5438)
+    ports:
+      - "5438:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    # データ蓄積場所
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # 落ちても再起動
+    restart: always
+
+# なんやこれ
+volumes:
+  postgres_data:
+
+
+# please below cmd
+# $docker-compose up -d
+
