@@ -1,0 +1,103 @@
+以下は、アプリケーション用のDockerfileと、PostgreSQL用のコンテナを定義するDocker Composeファイルのサンプルです。
+
+**1. アプリケーション用の Dockerfile**
+
+   アプリケーションのDockerfileは、アプリケーションのイメージを構築するための手順を記述します。
+
+   ```dockerfile
+   # ベースイメージとしてNode.js 18を使用
+   FROM node:18-alpine
+
+   # 作業ディレクトリを/appに設定
+   WORKDIR /app
+
+   # package.jsonとpackage-lock.jsonをコピー
+   COPY package*.json ./
+
+   # 依存関係をインストール
+   RUN npm install
+
+   # アプリケーションのソースコードをコピー
+   COPY . ./
+
+   # ビルドコマンドを実行 (必要な場合)
+   # 例: RUN npm run build
+
+   # ポートを公開 (アプリケーションが特定のポートをリッスンする場合)
+   EXPOSE 3000
+
+   # アプリケーションの起動コマンド
+   CMD ["npm", "start"]
+   ```
+
+   この例では、Node.jsアプリケーションをコンテナ化する手順を示しています。
+
+   * `FROM node:18-alpine`: Node.js 18のAlpine Linuxベースのイメージをベースイメージとして使用します。Alpine Linuxは軽量なため、イメージサイズを小さくできます。
+   * `WORKDIR /app`: コンテナ内の作業ディレクトリを`/app`に設定します。
+   * `COPY package*.json ./`: `package.json`と`package-lock.json`を現在のディレクトリからコンテナの`/app`ディレクトリにコピーします。
+   * `RUN npm install`: コンテナ内で`npm install`を実行して、アプリケーションの依存関係をインストールします。
+   * `COPY . ./`: アプリケーションのソースコードを現在のディレクトリからコンテナの`/app`ディレクトリにコピーします。
+   * `EXPOSE 3000`: コンテナがポート3000でリッスンすることをDockerに伝えます。
+   * `CMD ["npm", "start"]`: コンテナ起動時に`npm start`コマンドを実行します。
+
+**2. PostgreSQL用の Docker Compose ファイル (`docker-compose.yml`)**
+
+   Docker Composeファイルは、複数のコンテナを定義し、それらのコンテナ間の関係を記述します。
+
+   ```yaml
+   version: '3.8'
+   services:
+     db:
+       image: postgres:14-alpine
+       container_name: postgresql-db
+       volumes:
+         - postgres_data:/var/lib/postgresql/data
+       environment:
+         POSTGRES_USER: myuser
+         POSTGRES_PASSWORD: mypassword
+         POSTGRES_DB: mydb
+       ports:
+         - "5432:5432"
+       restart: always
+     app:
+       build: .  # Dockerfileが置かれているディレクトリを指定
+       depends_on:
+         - db
+       ports:
+         - "3000:3000"
+       environment:
+         DATABASE_URL: "postgresql://myuser:mypassword@db:5432/mydb"
+   volumes:
+     postgres_data:
+   ```
+
+   この例では、PostgreSQLコンテナとアプリケーションコンテナの2つのサービスを定義しています。
+
+   * `version: '3.8'`: Docker Composeファイルのバージョンを指定します。
+   * `services:`: 起動するサービス（コンテナ）を定義します。
+       * `db:`: PostgreSQLのサービスを定義します。
+           * `image: postgres:14-alpine`: PostgreSQL 14のAlpine Linuxベースのイメージを使用します。
+           * `container_name: postgresql-db`: コンテナ名を`postgresql-db`に設定します。
+           * `volumes: - postgres_data:/var/lib/postgresql/data`: PostgreSQLのデータディレクトリをボリュームにマウントし、データを永続化します。
+           * `environment:`: 環境変数を設定します。
+               * `POSTGRES_USER`: PostgreSQLのユーザー名を指定します。
+               * `POSTGRES_PASSWORD`: PostgreSQLのパスワードを指定します。
+               * `POSTGRES_DB`: 作成するデータベース名を指定します。
+           * `ports: - "5432:5432"`: ホストマシンの5432番ポートをコンテナの5432番ポートにマッピングします。
+           * `restart: always`: コンテナが停止した場合に再起動します。
+       * `app:`: アプリケーションのサービスを定義します。
+           * `build: .`: Dockerfileが置かれているディレクトリ（この例では現在のディレクトリ）を指定します。Docker Composeは、このDockerfileを使用してアプリケーションのイメージをビルドします。
+           * `depends_on: - db`: アプリケーションコンテナがPostgreSQLコンテナに依存していることを指定します。これにより、PostgreSQLコンテナが先に起動します。
+           * `ports: - "3000:3000"`: ホストマシンの3000番ポートをコンテナの3000番ポートにマッピングします。
+           * `environment:`: 環境変数を設定します。
+               * `DATABASE_URL`: アプリケーションがPostgreSQLに接続するための接続文字列を指定します。`db`はPostgreSQLコンテナのホスト名として使用できます。
+   * `volumes:`: ボリュームを定義します。
+       * `postgres_data:`: PostgreSQLのデータを保存するための名前付きボリュームを定義します。
+
+**補足:**
+
+* アプリケーションのDockerfileとDocker Composeファイルは、アプリケーションの構成に合わせて変更する必要があります。
+* 上記の例では、Node.jsアプリケーションとPostgreSQLを使用していますが、他の言語やデータベースを使用する場合でも、基本的な構成は同じです。
+* Docker Composeを使用すると、複数のコンテナを簡単に管理し、連携させることができます。
+
+このサンプルを参考に、アプリケーションとPostgreSQLのコンテナを構築してみてください。
