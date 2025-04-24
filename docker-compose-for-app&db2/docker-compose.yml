@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  # アプリケーションコンテナ
+  app:
+    # Dockerfileが置かれているディレクトリを指定
+    build:
+      context: .
+      dockerfile: Dockerfile  # アプリケーションのDockerfile名
+    ports:
+      - "3000:3000"           # Next.jsのデフォルトポート
+    volumes:
+     #- ./app:/app             # ソースコードをマウント (開発用)
+      - C:\dev:/app
+    depends_on:
+      - db                    # PostgreSQLコンテナが起動後に起動
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb # PostgreSQL接続URL
+    restart: always
+  # PostgreSQLコンテナ
+  db:
+    image: postgres:14-alpine
+    container_name: postgresql-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      # 外からポート：5438 でアクセス可能とする
+      - "5438:5432"
+    restart: always
+
+# ボリューム定義
+volumes:
+  postgres_data:
