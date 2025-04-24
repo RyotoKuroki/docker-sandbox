@@ -1,0 +1,23 @@
+# ベースイメージとしてNode.js 18を使用
+FROM node:18-alpine
+
+# 作業ディレクトリを作成
+WORKDIR /app
+
+# package.json と package-lock.json をコピー
+COPY package*.json ./
+
+# 依存関係をインストール
+RUN npm install
+
+# ソースコードをコピー
+COPY . .
+
+# ビルドコマンドを実行 (必要な場合)
+# 例: RUN npm run build
+
+# ポート3000を公開
+EXPOSE 3000
+
+# 起動コマンドを定義
+CMD ["npm", "start"]
