@@ -1,0 +1,5 @@
+docker compose up --build -d > log\up.log
+docker compose down --volumes > log\down.log
+docker compose logs -f
+
+

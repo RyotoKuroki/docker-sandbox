@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  # アプリケーションコンテナ
+  app:
+    container_name: myapp-app
+    build: . # Dockerfileが置かれているディレクトリを指定します
+    ports:
+      - "3000:3000" # アプリケーションのポートを公開します
+    volumes:
+      - ./myapp:/app # ソースコードをマウントします (開発用)
+      - /app/node_modules # node_modulesを除外
+    depends_on:
+      - db # PostgreSQLコンテナが起動後に起動します
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME} # PostgreSQL接続URL
+    restart: always
+  # PostgreSQLコンテナ
+  db:
+    image: postgres:17.4-alpine # PostgreSQL 14のAlpineイメージを使用します
+    container_name: myapp-postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # データを永続化するためのボリューム
+    environment:
+      POSTGRES_USER: ${DB_USER} # ユーザー名
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # パスワード
+      POSTGRES_DB: ${DB_NAME} # データベース名
+    ports:
+      - "5438:5432" # PostgreSQLのポートを公開します（外からアクセスする際は 5438に変換して公開）
+    restart: always
+
+# ボリューム定義
+volumes:
+  postgres_data:
