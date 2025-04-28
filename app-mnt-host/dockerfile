@@ -18,7 +18,7 @@ RUN npm install
 EXPOSE 3000
 
 # コンテナ起動時に実行するコマンドを定義
-CMD ["npm", "run", "dev"]
+#CMD ["npm", "run", "dev"]
 
 
 #このDockerfileは、Node.js 18アプリケーションをコンテナ化するための基本的な手順を記述します。
