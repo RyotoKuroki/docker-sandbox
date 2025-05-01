@@ -1,5 +1,5 @@
-# ベースイメージとして Node.js 18 を使用
-FROM node:18-alpine
+# ベースイメージとして Node.js 20 を使用
+FROM node:20-alpine
 
 # コンテナ内に作業ディレクトリを作成
 WORKDIR /app
@@ -16,10 +16,6 @@ RUN npm install
 
 # アプリケーションがリッスンするポートを指定
 EXPOSE 3000
-
-# コンテナ起動時に実行するコマンドを定義
-#CMD ["npm", "run", "dev"]
-
 
 #このDockerfileは、Node.js 18アプリケーションをコンテナ化するための基本的な手順を記述します。
 #
