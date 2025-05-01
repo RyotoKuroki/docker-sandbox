@@ -1,0 +1,144 @@
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    /*gap: 10px;*/
+    align-items: center;
+    /*height: 40px;*/
+    top: 0;
+    vertical-align: top;
+}
+/*
+.vertical {
+    display: grid;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    vertical-align: top;
+}
+*/
+.cols1 { width: 100.00%; }
+.cols2 { width: 50.00%; }
+.cols3 { width: 33.33%; }
+.cols4 { width: 25.00%; }
+.cols5 { width: 20.00%; }
+  
+
+
+
+
+
+
+
+.labelArea {
+    background-color: green;
+    border: solid 1px red;
+    height: 100%;
+    width: 100px;
+    display: grid;         /*縦位置中央*/
+    align-items: center;   /*縦位置中央*/
+    padding: 5px;
+}
+.inputArea {
+    border: solid 1px red;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    display: grid;         /*縦位置中央*/
+    text-align: center;    /*縦位置中央*/
+    padding: 5px;
+}
+.buttonArea {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    display: grid;         /*縦位置中央*/
+    text-align: center;    /*縦位置中央*/
+
+    padding: 5px;
+}
+
+
+
+.gap {
+    gap: 10px;
+}
+
+
+
+.w_100 {
+    min-width: 100px;
+}
+.w_150 {
+    min-width: 150px;
+}
+.w_200 {
+    min-width: 200px;
+}
+.w_full {
+    min-width: 100%;
+}
+
+
+
+.h_50 {
+    min-height: 50px;
+    height: 50px;
+}
+.h_150 {
+    min-height: 150px;
+    height: 150px;
+}
+.h_200 {
+    min-height: 200px;
+    height: 200px;
+}
+.h_250 {
+    min-height: 250px;
+    height: 250px;
+}
+.h_300 {
+    min-height: 300px;
+    height: 300px;
+}
+.h_400 {
+    min-height: 400px;
+    height: 400px;
+}
+.h_full {
+    min-height: 100%;
+}
+
+.p_1em {
+    padding: 1em;
+}
+
+.mt_10 {
+    margin-top: 10px;
+}
+.mt_20 {
+    margin-top: 20px;
+}
+
+
+
+.size_fix {
+    resize: none;
+}
+
+.center {
+    text-align: center;
+}
+
+
+
+.inputElm {
+    font-size: large;
+    min-width: 100px;
+    width: 100%;
+}
+
+
