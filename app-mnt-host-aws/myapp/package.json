@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.800.0",
+    "@aws-sdk/lib-storage": "^3.800.0",
     "fs": "^0.0.1-security",
     "next": "15.3.1",
+    "path": "^0.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

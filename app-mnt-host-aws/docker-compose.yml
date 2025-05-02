@@ -38,14 +38,16 @@ services:
   localstack:
     image: localstack/localstack:latest
     environment:
-      - SERVICES=s3,dynamodb,sqs,sns  # 使用するAWSサービスを定義
+      #- SERVICES=s3,dynamodb,sqs,sns,Lambda  # 使用するAWSサービスを定義
+      - SERVICES=s3,Lambda  # 使用するAWSサービスを定義
       - AWS_DEFAULT_REGION=us-east-1
       - EDGE_PORT=4566  # LocalStackのエッジポート
     ports:
       - "4566:4566"  # LocalStackのエッジポートを公開
       - "8080:8080" #LocalStack Web UI
     volumes:
-      - "./localstack:/tmp/localstack"  # LocalStackの設定やデータをマウント
+      #- "./localstack:/tmp/localstack"  # LocalStackの設定やデータをマウント
+      - "./localstack:/var/lib/localstack"
     restart: always
 
 # ボリューム定義
