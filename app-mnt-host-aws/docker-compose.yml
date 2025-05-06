@@ -7,7 +7,8 @@ services:
     ports:
       - "3000:3000" # アプリケーションのポートを公開します
     volumes:
-      - ./myapp:/app # ソースコードをマウントします (開発用)
+      #- ./myapp:/app # ソースコードをマウントします (開発用)
+      - ./myapp-tailwind:/app # ソースコードをマウントします (開発用)
       - /app/node_modules # node_modulesを除外
     depends_on:
       - db # PostgreSQLコンテナが起動後に起動します
@@ -40,14 +41,24 @@ services:
     environment:
       #- SERVICES=s3,dynamodb,sqs,sns,Lambda  # 使用するAWSサービスを定義
       - SERVICES=s3,Lambda  # 使用するAWSサービスを定義
+      - HOSTNAME_EXTERNAL=localhost
+      - DOCKER_HOST=unix:///var/run/docker.sock # Docker ホスト
+      - DEBUG=1
+      #- EDGE_PORT=4566  # LocalStackのエッジポート
       - AWS_DEFAULT_REGION=us-east-1
-      - EDGE_PORT=4566  # LocalStackのエッジポート
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      #- INIT_SCRIPTS=./docker-entrypoint-init.d/init.sh # 初期化スクリプトのパス
     ports:
-      - "4566:4566"  # LocalStackのエッジポートを公開
-      - "8080:8080" #LocalStack Web UI
+      #- "4566:4566"  # LocalStackのエッジポートを公開
+      #- "8080:8080" #LocalStack Web UI
+      - "4566:4566"            # ポートフォワーディング
+      #- "4571:4571"            # (オプション)
     volumes:
       #- "./localstack:/tmp/localstack"  # LocalStackの設定やデータをマウント
       - "./localstack:/var/lib/localstack"
+      #- "${PWD}/.data:/tmp/data"            # 永続化 (オプション)
+      #- "${PWD}/docker-entrypoint-init.d:/docker-entrypoint-init.d" # 初期化スクリプトのマウント
     restart: always
 
 # ボリューム定義

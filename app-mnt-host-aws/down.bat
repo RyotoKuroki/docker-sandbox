@@ -1,4 +1,4 @@
-docker compose down --volumes > log\down.log
+docker compose down --volumes > down.log
 
 
 

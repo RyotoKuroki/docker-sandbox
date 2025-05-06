@@ -6,7 +6,8 @@ WORKDIR /app
 
 # ホストマシンから必要なファイルをコンテナにコピー
 # 例: アプリケーションのソースコード、package.json など
-COPY ./myapp /app
+#COPY ./myapp /app
+COPY ./myapp-tailwind /app
 
 # アプリケーションの依存関係をインストール
 RUN npm install

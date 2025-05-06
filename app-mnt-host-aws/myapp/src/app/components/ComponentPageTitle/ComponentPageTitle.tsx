@@ -1,7 +1,6 @@
-"use client";
 
 import styles from "./../page.module.css";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 interface Props {
   title: string;
