@@ -1,0 +1,19 @@
+
+画像を基にソースコードを生成してください。
+但し以下のルールに従ってください。
+＜ルール＞
+・動作環境はNodejs
+・言語はTypescript
+・フレームワークはNextjs
+・生成するソースは以下のURLでアクセスする想定で作成してください。
+　　１つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=menter
+　　２つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=guest
+　　３つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=viewer
+　　４つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=completed
+・生成するソースは以下の構成にして下さい
+　　→any-seminer
+　　　　┗page.tsx                // コンポーネントを表示するメインページ実装
+　　　　┗types.ts                // modeの定義や、その他の定義を実装
+
+
+

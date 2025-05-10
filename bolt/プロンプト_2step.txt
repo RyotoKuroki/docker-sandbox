@@ -1,0 +1,45 @@
+
+画像を基にソースコードを生成してください。
+但し以下のルールに従ってください。
+＜ルール＞
+・動作環境はNodejs
+・言語はTypescript
+・フレームワークはNextjs
+・生成するソースは以下のURLでアクセスする想定で作成してください。
+　　１つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=menter
+　　２つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=guest
+　　３つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=viewer
+　　４つ目の画像：http://localhost:3000/zzzzz/any-seminer?mode=completed
+・生成するソースは以下の構成にして下さい
+　　→any-seminer
+　　　　┗page.tsx                // コンポーネントを表示するメインページ実装
+　　　　┗components
+　　　　　　┗menterView.tsx      // １つめの画像のページ実装
+　　　　　　┗guestView.tsx       // ２つめの画像のページ実装
+　　　　　　┗viewerView.tsx      // ３つめの画像のページ実装
+　　　　　　┗completedView.tsx   // ４つめの画像のページ実装
+　　　　┗types.ts                // modeの定義や、その他の定義を実装
+
+
+
+
+指示に従ってソースを修正してください
+menterView.tsxの内容を画像の通り修正してください
+・ラベル項目は右揃えとしてください
+・編集項目は左揃えとしてください
+・チェックボックス、ラジオボタンはgap-2程度の適切な間隔としてください
+・アスタリスクマークは青色としてください
+
+
+
+guestView.tsxの内容を画像の通り修正してください
+
+viewerView.tsxの内容を画像の通り修正してください
+
+completedView.tsxの内容を画像の通り修正してください
+
+
+
+
+
+
