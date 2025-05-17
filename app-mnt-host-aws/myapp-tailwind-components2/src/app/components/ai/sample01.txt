@@ -1,0 +1,91 @@
+import React, { ReactNode } from 'react';
+import { cn } from "@/lib/utils" // utility関数のパスはプロジェクトに合わせて変更してください
+
+interface ComposableComponentProps {
+    children: ReactNode;
+    className?: string;
+}
+
+/**
+ * 汎用コンポーネント：子要素をラップしてスタイルを適用
+ *
+ * このコンポーネントは、渡された子要素を単一のコンテナ要素でラップし、
+ * 共通のスタイルやレイアウトを適用するために使用できます。
+ *
+ * @param {ReactNode} children - 表示する子要素。任意のReactノード（要素、コンポーネント、テキストなど）を受け入れます。
+ * @param {string} [className] - コンテナ要素に適用する追加のCSSクラス名（Tailwind CSS）。
+ */
+const ComposableComponent: React.FC<ComposableComponentProps> = ({ children, className }) => {
+    return (
+        <div className={cn(
+            "flex flex-col gap-4", // デフォルトのスタイル：縦並び、要素間に間隔
+            className // 追加のクラス名を適用
+        )}>
+            {children}
+        </div>
+    );
+
+};
+
+const MyInputComponent = () => {
+  return (
+    <ComposableComponent className="w-full max-w-md">
+      <label htmlFor="my-input" className="block text-sm font-medium text-gray-700">
+        入力してください
+      </label>
+      <input
+        id="my-input"
+        type="text"
+        placeholder="ここにテキストを入力してください"
+        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+      <div className="text-sm text-gray-500">
+        入力に関する説明や補足情報
+      </div>
+    </ComposableComponent>
+  );
+};
+
+const MyLabelAndDivComponent = () => {
+    return (
+        <ComposableComponent className="w-full max-w-md">
+            <label className="block text-sm font-medium text-gray-700">
+              ラベルテキスト
+            </label>
+            <div className="p-4 bg-gray-100 rounded-md">
+                <div>
+                  <p className="text-gray-800">
+                    これはdiv要素内のコンテンツです。
+                  </p>
+                  <p className="text-sm text-gray-500">追加の説明や情報。</p>
+                </div>
+            </div>
+        </ComposableComponent>
+    )
+}
+
+const MyCustomComponent = () => {
+  return (
+    <ComposableComponent className="w-full max-w-md bg-yellow-100 p-4 rounded-md">
+      <h2 className="text-lg font-semibold text-yellow-800">カスタムコンポーネントの例</h2>
+      <p className="text-yellow-700">
+        このコンポーネントは、ComposableComponent内で自由にレイアウトできます。
+      </p>
+    </ComposableComponent>
+  );
+};
+
+const App = () => {
+    return (
+        <div className="p-6">
+            <h1 className="text-2xl font-bold mb-8">
+                例：汎用コンポーネント ComposableComponent
+            </h1>
+            <MyInputComponent />
+            <MyLabelAndDivComponent/>
+            <MyCustomComponent />
+        </div>
+    );
+};
+
+export default App;
