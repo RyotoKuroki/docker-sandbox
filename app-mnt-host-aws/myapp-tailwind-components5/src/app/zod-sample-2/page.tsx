@@ -95,7 +95,10 @@ export default function HomePage() {
             />
             {errors.name && (
               <p id="name-error" className="mt-1 text-xs text-red-500">
+{/*                
                 {errors.name.join(', ')}
+*/}
+                {errors.name[0]}
               </p>
             )}
           </div>
