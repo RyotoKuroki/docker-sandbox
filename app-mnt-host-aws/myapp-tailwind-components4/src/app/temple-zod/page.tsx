@@ -144,9 +144,9 @@ export default function Home() {
                   <InputBlock className="flex flex-col">
                       <input
                         id="name"
-                        value={formData.name || ''}
+                        defaultValue={formData.name || ''}
                         onChange={handleChange}
-                        className="w-full h-[70%] border" />
+                        className="w-full h-full border" />
                           {errors.name && (
                             <p id="name-error" className="mt-1 text-xs text-red-500">
                               {errors.name.join(', ')}
