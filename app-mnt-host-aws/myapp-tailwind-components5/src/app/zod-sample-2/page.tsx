@@ -7,7 +7,10 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const FormSchema = z.object({
-  name: z.string().min(2, { message: '名前を入力してください。' }),
+  //name: z.string().min(2, { message: '名前を入力してください。' }),
+  name: z.string()
+          .nonempty({ message: '名前を入力してください！' })
+          .min(2, { message: '2文字以上で入力してください。' }),
   email: z.string().email({ message: '有効なメールアドレスを入力してください。' }),
   // age: z.number().min(18, { message: '18歳以上である必要があります。' }).optional(),
 });
