@@ -20,6 +20,17 @@ services:
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_REGION=us-east-1
     command: npm run dev
+    develop: # watch設定をここに追加
+      watch:
+        - action: sync # ソースコードの変更をコンテナに同期する
+          path: ./myapp-tailwind-components3 # ウォッチするホスト側のパス
+          target: /app # コンテナ側の同期先パス
+          ignore: # 除外するパス (任意)
+            - node_modules/
+            - .git/
+        - action: rebuild # Dockerfileや依存ファイルが変更されたらリビルド
+          path: ./package.json # ウォッチするホスト側のパス (例: package.json)
+          target: /app/package.json # コンテナ側のパス (ビルドコンテキスト内のパス)
     restart: always
   # PostgreSQLコンテナ
   db:
