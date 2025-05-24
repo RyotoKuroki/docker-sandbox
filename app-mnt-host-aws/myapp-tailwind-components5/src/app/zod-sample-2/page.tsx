@@ -150,9 +150,14 @@ export default function HomePage() {
 
       {/* ローディング */}
       {isSubmitting && (
-        <div className="flex justify-center" aria-label="読み込み中">
-          <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-        </div>
+        <>
+          <div className="flex justify-center" aria-label="読み込み中">
+            <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+          </div>
+          <div className="flex justify-center" aria-label="読み込み中">
+            <div className="animate-spin h-8 w-8 bg-blue-300 rounded-xl"></div>
+          </div>
+        </>
       )}
 
       <footer className="mt-8 text-center text-gray-500 text-sm">
