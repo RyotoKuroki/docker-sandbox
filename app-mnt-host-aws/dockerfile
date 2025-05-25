@@ -8,10 +8,10 @@ WORKDIR /app
 # 例: アプリケーションのソースコード、package.json など
 #COPY ./myapp /app
 #COPY ./myapp-tailwind /app
-COPY ./myapp-tailwind-components6 /app
+#COPY ./myapp-tailwind-components6 /app
 
 # アプリケーションの依存関係をインストール
-RUN npm install
+#RUN npm install
 
 # アプリケーションがリッスンするポートを指定
 #EXPOSE 3000

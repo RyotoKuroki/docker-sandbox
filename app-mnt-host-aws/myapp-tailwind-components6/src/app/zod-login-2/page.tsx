@@ -7,7 +7,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 // schema of sub-email.
-const subEmailSchema = z.object({
+const subEmailsSchema = z.object({
     priority: z.number()
           .min(1, { message: '1以上で入力してください' })
           .max(100, { message: '100以下で入力してください' }),
@@ -22,7 +22,7 @@ const FormSchema = z.object({
   email: z.string()
           .email({ message: '有効なメールアドレスを入力してください。' }),
   // age: z.number().min(18, { message: '18歳以上である必要があります。' }).optional(),
-  subs: z.array(subEmailSchema).min(1, {
+  subs: z.array(subEmailsSchema).min(1, {
       message: '少なくとも1つのアイテムを追加してください',
   }),
 });
@@ -74,7 +74,7 @@ export default function HomePage() {
 
     // 入力データのバリデーション
     const result = FormSchema.safeParse(formData);
-    alert(JSON.stringify(result, null, 4))
+    //alert(JSON.stringify(result, null, 4))
 
     if (!result.success) {
       // バリデーションエラーがある場合
@@ -101,7 +101,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">
-          お問い合わせフォーム;;;
+          お問い合わせフォーム;;x
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -124,7 +124,6 @@ export default function HomePage() {
             {errors.name && (
               <p id="name-error" className="mt-1 text-xs text-red-500">
                 {errors.name[0]}
-
               </p>
             )}
           </div>
@@ -167,14 +166,17 @@ export default function HomePage() {
                     className={`mt-1 block w-full px-3 py-2 border ${
                       (errors.subs) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    aria-describedby="email-error"
+                    //aria-describedby="email-error"
+                    //{...methods.register(`subs.${index}.priority`)}
+                    //id={methods.register(`subs.${index}.priority`).name}
+                    aria-describedby={`subs-${index}-priority-error`}
                     {...methods.register(`subs.${index}.priority`)}
-                    id={methods.register(`subs.${index}.priority`).name}
+                    id={`subs.${index}.priority`}
                     placeholder='優先度'
                   />
-                  {errors.subs && (
-                    <p id="email-error" className="mt-1 text-xs text-red-500">
-                      {errors.subs.join(", ")}
+                  {methods.formState.errors.subs?.[index]?.priority && (
+                    <p id={`subs-${index}-priority-error`} className="mt-1 text-xs text-red-500">
+                      {methods.formState.errors.subs[index]?.priority?.message}
                     </p>
                   )}
                 </div>
@@ -184,14 +186,17 @@ export default function HomePage() {
                     className={`mt-1 block w-full px-3 py-2 border ${
                       (errors.subs) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    aria-describedby="email-error"
+                    //aria-describedby="email-error"
+                    //{...methods.register(`subs.${index}.subEmail`)}
+                    //id={methods.register(`subs.${index}.subEmail`).name}
+                    aria-describedby={`subs-${index}-subEmail-error`}
                     {...methods.register(`subs.${index}.subEmail`)}
-                    id={methods.register(`subs.${index}.subEmail`).name}
+                    id={`subs.${index}.subEmail`}
                     placeholder='sub-email'
                   />
-                  {errors.subs && (
-                    <p id="email-error" className="mt-1 text-xs text-red-500">
-                      {errors.subs[index]}
+                  {methods.formState.errors.subs?.[index]?.subEmail && (
+                    <p id={`subs-${index}-subEmail-error`} className="mt-1 text-xs text-red-500">
+                      {methods.formState.errors.subs[index]?.subEmail?.message}
                     </p>
                   )}
                 </div>

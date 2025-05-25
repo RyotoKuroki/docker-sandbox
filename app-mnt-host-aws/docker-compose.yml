@@ -20,7 +20,8 @@ services:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_REGION=us-east-1
-    command: npm run dev
+    #command: npm run dev
+    command: sh -c "npm install; npm run dev"
     develop: # watch設定をここに追加
       watch:
         - action: sync # ソースコードの変更をコンテナに同期する
