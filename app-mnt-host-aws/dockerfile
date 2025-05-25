@@ -7,12 +7,13 @@ WORKDIR /app
 # ホストマシンから必要なファイルをコンテナにコピー
 # 例: アプリケーションのソースコード、package.json など
 #COPY ./myapp /app
-COPY ./myapp-tailwind /app
+#COPY ./myapp-tailwind /app
+COPY ./myapp-tailwind-components6 /app
 
 # アプリケーションの依存関係をインストール
 RUN npm install
 
 # アプリケーションがリッスンするポートを指定
-EXPOSE 3000
+#EXPOSE 3000
 
 #CMD ["npm", "run", "dev"] # or  CMD ["npm", "start"]
