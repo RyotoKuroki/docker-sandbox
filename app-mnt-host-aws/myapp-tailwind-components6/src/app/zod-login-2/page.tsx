@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
-    priority: z.number()
+    priority: z.coerce.number()
           .min(1, { message: '1以上で入力してください' })
           .max(100, { message: '100以下で入力してください' }),
     subEmail: z.string()
@@ -42,8 +42,8 @@ export default function HomePage() {
   const methods = useForm<FormInput>({
     resolver: standardSchemaResolver(FormSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: "xxx",
+      email: "hoge@somedomain.com",
       subs: [
         { priority: 1, subEmail: "sub1@somedomain.com" },
         { priority: 2, subEmail: "sub2@somedomain.com" },
@@ -101,7 +101,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">
-          お問い合わせフォーム;;x
+          お問い合わせフォーム;
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -153,9 +153,7 @@ export default function HomePage() {
 
           <div>
             <label
-              className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor={methods.register("email").name}
-            >
+              className="block text-sm font-medium text-gray-700 mb-1">
               Subメールアドレス
             </label>
             {fields.map((sub, index) => (
@@ -164,11 +162,8 @@ export default function HomePage() {
                   <input
                     type="number"
                     className={`mt-1 block w-full px-3 py-2 border ${
-                      (errors.subs) ? 'border-red-500' : 'border-gray-300'
+                      (methods.formState.errors.subs?.[index]?.priority) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    //aria-describedby="email-error"
-                    //{...methods.register(`subs.${index}.priority`)}
-                    //id={methods.register(`subs.${index}.priority`).name}
                     aria-describedby={`subs-${index}-priority-error`}
                     {...methods.register(`subs.${index}.priority`)}
                     id={`subs.${index}.priority`}
@@ -184,11 +179,8 @@ export default function HomePage() {
                   <input
                     type="email"
                     className={`mt-1 block w-full px-3 py-2 border ${
-                      (errors.subs) ? 'border-red-500' : 'border-gray-300'
+                      (methods.formState.errors.subs?.[index]?.subEmail) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    //aria-describedby="email-error"
-                    //{...methods.register(`subs.${index}.subEmail`)}
-                    //id={methods.register(`subs.${index}.subEmail`).name}
                     aria-describedby={`subs-${index}-subEmail-error`}
                     {...methods.register(`subs.${index}.subEmail`)}
                     id={`subs.${index}.subEmail`}
@@ -228,14 +220,21 @@ export default function HomePage() {
 
       {/* ローディング */}
       {isSubmitting && (
-        <>
+        <div className="fixed w-full h-full flex flex-center justify-center items-center">
+{/*
           <div className="flex justify-center" aria-label="読み込み中">
             <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
           </div>
           <div className="flex justify-center" aria-label="読み込み中">
             <div className="animate-spin h-8 w-8 bg-blue-300 rounded-xl"></div>
           </div>
-        </>
+*/}
+          <div className="flex flex-col items-center space-y-4 bg-green-200 p-5 rounded-2xl">
+            {/* 歯車のように回るスピナー */}
+            <div className="animate-spin h-22 w-22 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+            <p className="text-blue-500 text-lg" aria-label="processing...">processing...</p>
+          </div>
+        </div>
       )}
 
       <footer className="mt-8 text-center text-gray-500 text-sm">
