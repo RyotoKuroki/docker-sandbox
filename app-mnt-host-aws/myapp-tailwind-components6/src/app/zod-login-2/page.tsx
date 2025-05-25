@@ -157,8 +157,8 @@ export default function HomePage() {
               Subメールアドレス
             </label>
             {fields.map((sub, index) => (
-              <div className='flex flex-row justify-start items-center gap-2'>
-                <div className='w-[30%]'>
+              <div className='flex flex-row justify-start items-start gap-2'>
+                <div className='w-[30%] items-start'>
                   <input
                     type="number"
                     className={`mt-1 block w-full px-3 py-2 border ${
@@ -175,7 +175,7 @@ export default function HomePage() {
                     </p>
                   )}
                 </div>
-                <div className='flex-1'>
+                <div className='flex-1 items-start'>
                   <input
                     type="email"
                     className={`mt-1 block w-full px-3 py-2 border ${
@@ -229,7 +229,7 @@ export default function HomePage() {
             <div className="animate-spin h-8 w-8 bg-blue-300 rounded-xl"></div>
           </div>
 */}
-          <div className="flex flex-col items-center space-y-4 bg-green-200 p-5 rounded-2xl">
+          <div className="flex flex-col items-center space-y-4 border-green-500 bg-green-200 p-5 rounded-2xl">
             {/* 歯車のように回るスピナー */}
             <div className="animate-spin h-22 w-22 border-4 border-blue-500 rounded-full border-t-transparent"></div>
             <p className="text-blue-500 text-lg" aria-label="processing...">processing...</p>
