@@ -5,10 +5,11 @@ services:
     container_name: myapp-app-aws
     build: . # Dockerfileが置かれているディレクトリを指定します
     ports:
-      - "3000:3000" # アプリケーションのポートを公開します
+      - "3005:3000" # アプリケーションのポートを公開します
     volumes:
       #- ./myapp:/app # ソースコードをマウントします (開発用)
-      - ./myapp-tailwind:/app # ソースコードをマウントします (開発用)
+      #- ./myapp-tailwind:/app # ソースコードをマウントします (開発用)
+      - ./myapp-tailwind-components6:/app # ソースコードをマウントします (開発用)
       - /app/node_modules # node_modulesを除外
     depends_on:
       - db # PostgreSQLコンテナが起動後に起動します
@@ -23,7 +24,7 @@ services:
     develop: # watch設定をここに追加
       watch:
         - action: sync # ソースコードの変更をコンテナに同期する
-          path: ./myapp-tailwind-components3 # ウォッチするホスト側のパス
+          path: ./myapp-tailwind-components6 # ウォッチするホスト側のパス
           target: /app # コンテナ側の同期先パス
           ignore: # 除外するパス (任意)
             - node_modules/
@@ -43,7 +44,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD} # パスワード
       POSTGRES_DB: ${DB_NAME} # データベース名
     ports:
-      - "5438:5432" # PostgreSQLのポートを公開します（外からアクセスする際は 5438に変換して公開）
+      - "5435:5432" # PostgreSQLのポートを公開します（外からアクセスする際は 5438に変換して公開）
     restart: always
 
   # LocalStackの定義
