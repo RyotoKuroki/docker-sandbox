@@ -104,12 +104,12 @@ export default function Home() {
                   <InputBlock className="flex flex-row space-x-3">
                     <div>
                       <label>
-                        <input type="radio" />aaaaaaa
+                        <input type="radio" /> aaaaaaa
                       </label>
                     </div>
                     <div>
                       <label>
-                        <input type="radio" />bbbbbbbbbbb
+                        <input type="radio" /> bbbbbbbbbbb
                       </label>
                     </div>
                   </InputBlock>
@@ -120,11 +120,11 @@ export default function Home() {
                   </LabelBlock>
                   <InputBlock>
                     <div className="flex flex-col items-center space-y-3 block flex-start justify-start">
-                      <label className='block'>
-                        <input type="radio" />aaaaaaa
+                      <label className='block w-full'>
+                        <input type="radio" /> aaaaaaa
                       </label>
-                      <label className='block'>
-                        <input type="radio" />bbbbbbbbbbb
+                      <label className='block w-full'>
+                        <input type="radio" /> bbbbbbbbbbb
                       </label>
                     </div>
                   </InputBlock>
