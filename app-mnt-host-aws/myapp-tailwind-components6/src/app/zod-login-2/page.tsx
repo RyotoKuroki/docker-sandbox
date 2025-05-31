@@ -5,6 +5,9 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import {
+  uiItemNames,
+} from "./schemas";
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
@@ -108,7 +111,7 @@ export default function HomePage() {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor={methods.register("name").name}
+              htmlFor={methods.register(uiItemNames.name).name}
             >
               お名前
             </label>
@@ -117,12 +120,12 @@ export default function HomePage() {
               className={`mt-1 block w-full px-3 py-2 border ${
                 errors.name ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-              aria-describedby="name-error"
-              {...methods.register("name")}
-              id={methods.register("name").name}
+              aria-describedby={`${uiItemNames.name}-${uiItemNames.error}`}
+              {...methods.register(uiItemNames.name)}
+              id={methods.register(uiItemNames.name).name}
             />
             {errors.name && (
-              <p id="name-error" className="mt-1 text-xs text-red-500">
+              <p id={`${uiItemNames.name}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
                 {errors.name[0]}
               </p>
             )}
@@ -131,7 +134,7 @@ export default function HomePage() {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor={methods.register("email").name}
+              htmlFor={methods.register(uiItemNames.email).name}
             >
               メールアドレス
             </label>
@@ -140,12 +143,12 @@ export default function HomePage() {
               className={`mt-1 block w-full px-3 py-2 border ${
                 errors.email ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-              aria-describedby="email-error"
-              {...methods.register("email")}
-              id={methods.register("email").name}
+              aria-describedby={`${uiItemNames.email}-${uiItemNames.error}`}
+              {...methods.register(uiItemNames.email)}
+              id={methods.register(uiItemNames.email).name}
             />
             {errors.email && (
-              <p id="email-error" className="mt-1 text-xs text-red-500">
+              <p id={`${uiItemNames.email}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
                 {errors.email.join(', ')}
               </p>
             )}
@@ -159,18 +162,35 @@ export default function HomePage() {
             {fields.map((sub, index) => (
               <div className='flex flex-row justify-start items-start gap-2'>
                 <div className='w-[30%] items-start'>
+                  {/*
                   <input
                     type="number"
                     className={`mt-1 block w-full px-3 py-2 border ${
                       (methods.formState.errors.subs?.[index]?.priority) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    aria-describedby={`subs-${index}-priority-error`}
-                    {...methods.register(`subs.${index}.priority`)}
-                    id={`subs.${index}.priority`}
+                    aria-describedby={`${uiItemNames.emailList}-${index}-${uiItemNames.priority}-${uiItemNames.error}`}
+                    {...methods.register(`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`)}
+                    id={`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`}
                     placeholder='優先度'
                   />
                   {methods.formState.errors.subs?.[index]?.priority && (
-                    <p id={`subs-${index}-priority-error`} className="mt-1 text-xs text-red-500">
+                    <p id={`${uiItemNames.emailList}-${index}-${uiItemNames.priority}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
+                      {methods.formState.errors.subs[index]?.priority?.message}
+                    </p>
+                  )}
+                  */}
+                  {/* 以下、削れる部分を削って最小限としたバージョン（※例えば、アクセシビリティを考慮しない場合は aria-describedby を削れる。。。） */}
+                  <input
+                    type="number"
+                    className={`mt-1 block w-full px-3 py-2 border ${
+                      (methods.formState.errors.subs?.[index]?.priority) ? 'border-red-500' : 'border-gray-300'
+                    } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                    {...methods.register(`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`)}
+                    id={`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`}
+                    placeholder='優先度'
+                  />
+                  {methods.formState.errors.subs?.[index]?.priority && (
+                    <p className="mt-1 text-xs text-red-500">
                       {methods.formState.errors.subs[index]?.priority?.message}
                     </p>
                   )}
@@ -181,13 +201,13 @@ export default function HomePage() {
                     className={`mt-1 block w-full px-3 py-2 border ${
                       (methods.formState.errors.subs?.[index]?.subEmail) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    aria-describedby={`subs-${index}-subEmail-error`}
-                    {...methods.register(`subs.${index}.subEmail`)}
-                    id={`subs.${index}.subEmail`}
+                    aria-describedby={`${uiItemNames.emailList}-${index}-${uiItemNames.subEmail}-${uiItemNames.error}`}
+                    {...methods.register(`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`)}
+                    id={`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`}
                     placeholder='sub-email'
                   />
                   {methods.formState.errors.subs?.[index]?.subEmail && (
-                    <p id={`subs-${index}-subEmail-error`} className="mt-1 text-xs text-red-500">
+                    <p id={`${uiItemNames.emailList}-${index}-${uiItemNames.subEmail}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
                       {methods.formState.errors.subs[index]?.subEmail?.message}
                     </p>
                   )}

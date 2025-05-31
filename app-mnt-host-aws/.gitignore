@@ -2,4 +2,4 @@
 machine.*
 localstack
 localstack.*
-
+node_modules
