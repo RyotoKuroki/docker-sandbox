@@ -1,42 +1,41 @@
-"use client";
+import React from 'react';
 
-import { useMemo, useState } from "react";
+export type ModalProps = {
+  open: boolean;
+  children: React.ReactNode;
+  onCancel: () => void;
+  onOk: () => void;
+};
 
-interface Props {
-  isOpen: boolean;
-  onApplied: () => void;
-  onCanceled: () => void;
-}
-
-const MyModal: React.FC<Props> = ({
-  isOpen,
-  onApplied,
-  onCanceled,
-}) => {
-  return (
-    <dialog className={`modal ${isOpen ? "modal-open" : ""}`} id="my-modal">
-      <div className="modal-box border-accent border-2 p-[0]">
-        <div className="bg-accent text-primary-content flex h-[50px] items-center justify-center text-[1.25rem] font-[800]">
-          Title
+const MyModal = (
+  props: ModalProps
+) => {
+  return props.open ? (
+    <>
+      <div className="bg-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-48 p-5 flex flex-col items-start absolute z-2000">
+        <div>
+          {props.children}
         </div>
-        <div className="pt-[2em] text-center">
-          <div>huhuhu？</div>
-        </div>
-        <div className="flex flex-col gap-[1rem] p-[1rem] p-[2rem]">
-          <div className="flex justify-around">
-            <button
-              className="btn btn-secondary w-[100px]"
-              onClick={onCanceled}
-            >
-              いいえ
-            </button>
-            <button className="btn btn-primary w-[100px]" onClick={onApplied}>
-              はい
-            </button>
-          </div>
+{/*
+        <h1 className="text-xl font-bold mb-5">Title</h1>
+        <p className="text-lg mb-5">Dialog Message.</p>
+*/}
+        <div className="flex mt-auto w-full">
+          <button
+            className="bg-slate-900 hover:bg-slate-700 text-white px-8 py-2 mx-auto"
+            onClick={() => props.onOk()}
+          >
+            OK
+          </button>
         </div>
       </div>
-    </dialog>
+      <div
+        className="fixed top-[0px] left-[0px] bg-black opacity-[50%] w-full h-full z-1000"
+        onClick={() => props.onCancel()}
+      ></div>
+    </>
+  ) : (
+    <></>
   );
 };
 

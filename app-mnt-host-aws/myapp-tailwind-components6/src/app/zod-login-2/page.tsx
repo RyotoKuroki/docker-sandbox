@@ -8,6 +8,7 @@ import {
   uiItemNames,
 } from "./schemas";
 import MyModal from './dialog-sample';
+import CompletedArea from './completed-area';
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
@@ -286,9 +287,10 @@ export default function HomePage() {
       
       {isMyModalOpened &&
         <MyModal
-          isOpen={isMyModalOpened}
-          onApplied={() => { setIsMyModalOpened(false) }}
-          onCanceled={() => { setIsMyModalOpened(false) }}
+          open={isMyModalOpened}
+          children={<CompletedArea title='Succeeeeeeeeeeded!!' className='' />}
+          onCancel={() => setIsMyModalOpened(false)}
+          onOk={() => setIsMyModalOpened(false)}
         />
       }
     </div>
