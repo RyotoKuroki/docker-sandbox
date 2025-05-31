@@ -1,15 +1,17 @@
 'use client';
 
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
+//import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'; // これに変更
 import { z } from 'zod';
 import {
   uiItemNames,
 } from "./schemas";
+import { Toaster, toast } from 'sonner';
+import { useSearchParams } from 'next/navigation';
 import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
-import { Toaster, toast } from 'sonner';
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
@@ -40,8 +42,29 @@ type FormInput = z.infer<typeof FormSchema>;
 type FormErrors = z.inferFlattenedErrors<typeof FormSchema>['fieldErrors'];
 
 
+// エクスポートするページコンポーネント
+export default function LoginPage() {
+  // ローディングコンポーネント
+  const Loading = () => (
+    <div className="loading-spinner">読み込み中...</div>
+  );
 
-export default function HomePage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <HomePage />
+    </Suspense>
+  );
+}
+
+/**
+ * 
+ * @returns 
+ */
+export function HomePage() {
+  
+  const searchParams = useSearchParams()
+  const params1 = searchParams && searchParams.get('p1')
+  console.log(params1)
 
   const [errors, setErrors] = useState<Partial<FormErrors>>({});
   const [submittedData, setSubmittedData] = useState<FormInput | null>(null);
@@ -49,7 +72,8 @@ export default function HomePage() {
   const [isMyModalOpened, setIsMyModalOpened] = useState(false);
 
   const methods = useForm<FormInput>({
-    resolver: standardSchemaResolver(FormSchema),
+    //resolver: standardSchemaResolver(FormSchema),
+    resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "xxx",
       email: "hoge@somedomain.com",
