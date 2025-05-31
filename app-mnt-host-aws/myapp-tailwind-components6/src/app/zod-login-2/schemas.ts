@@ -3,6 +3,7 @@
 export const enum uiItemNames {
     name = "name",
     email = "email",
+    nickname = "nickname",
 
     emailList = "subs",
     priority = "priority",
@@ -10,40 +11,4 @@ export const enum uiItemNames {
 
     error = "error",
 }
-
-
-export const createKeyAsError = (
-    name: string
-): string => {
-    return `${name}-error`;
-}
-export const createCollectionAriaKeyAsError = (
-    index: number,
-    collectionName: string,
-    name: string
-): string => {
-    //return `${name}-error`;
-    return `${collectionName}-${index}-${name}-error`
-}
-export const createCollectionId = (
-    index: number,
-    collectionName: string,
-    name: string
-): string => {
-    return `${collectionName}.${index}.${name}`
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

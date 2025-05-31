@@ -1,4 +1,3 @@
-// app/page.tsx
 'use client';
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
@@ -8,6 +7,7 @@ import { z } from 'zod';
 import {
   uiItemNames,
 } from "./schemas";
+import MyModal from './dialog-sample';
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
@@ -24,6 +24,8 @@ const FormSchema = z.object({
           .min(2, { message: '2文字以上で入力してください。' }),
   email: z.string()
           .email({ message: '有効なメールアドレスを入力してください。' }),
+  nickname: z.string()
+          .nullish(),
   // age: z.number().min(18, { message: '18歳以上である必要があります。' }).optional(),
   subs: z.array(subEmailsSchema).min(1, {
       message: '少なくとも1つのアイテムを追加してください',
@@ -41,12 +43,14 @@ export default function HomePage() {
   const [errors, setErrors] = useState<Partial<FormErrors>>({});
   const [submittedData, setSubmittedData] = useState<FormInput | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMyModalOpened, setIsMyModalOpened] = useState(false);
 
   const methods = useForm<FormInput>({
     resolver: standardSchemaResolver(FormSchema),
     defaultValues: {
       name: "xxx",
       email: "hoge@somedomain.com",
+      nickname: "",
       subs: [
         { priority: 1, subEmail: "sub1@somedomain.com" },
         { priority: 2, subEmail: "sub2@somedomain.com" },
@@ -74,6 +78,7 @@ export default function HomePage() {
     setIsSubmitting(true);
     setErrors({});
     setSubmittedData(null);
+    setIsMyModalOpened(false);
 
     // 入力データのバリデーション
     const result = FormSchema.safeParse(formData);
@@ -94,6 +99,7 @@ export default function HomePage() {
       // 例: await new Promise(resolve => setTimeout(resolve, 1000));
       console.log('Form submitted successfully:', result.data);
       setSubmittedData(result.data);
+      setIsMyModalOpened(true);
       // フォームをリセット（任意）
       // setFormData({ name: '', email: '' });
       setIsSubmitting(false);
@@ -104,7 +110,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">
-          お問い合わせフォーム;
+          お問い合わせフォーム
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -113,7 +119,7 @@ export default function HomePage() {
               className="block text-sm font-medium text-gray-700 mb-1"
               htmlFor={methods.register(uiItemNames.name).name}
             >
-              お名前
+              氏名
             </label>
             <input
               type="text"
@@ -156,11 +162,34 @@ export default function HomePage() {
 
           <div>
             <label
+              className="block text-sm font-medium text-gray-700 mb-1"
+              htmlFor={methods.register(uiItemNames.nickname).name}
+            >
+              ニックネーム
+            </label>
+            <input
+              type="text"
+              className={`mt-1 block w-full px-3 py-2 border ${
+                errors.nickname ? 'border-red-500' : 'border-gray-300'
+              } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+              aria-describedby={`${uiItemNames.nickname}-${uiItemNames.error}`}
+              {...methods.register(uiItemNames.nickname)}
+              id={methods.register(uiItemNames.nickname).name}
+            />
+            {errors.nickname && (
+              <p id={`${uiItemNames.nickname}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
+                {errors.nickname[0]}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
               className="block text-sm font-medium text-gray-700 mb-1">
               Subメールアドレス
             </label>
             {fields.map((sub, index) => (
-              <div className='flex flex-row justify-start items-start gap-2'>
+              <div className='flex flex-row justify-start items-start gap-2' key={index}>
                 <div className='w-[30%] items-start'>
                   {/*
                   <input
@@ -241,14 +270,6 @@ export default function HomePage() {
       {/* ローディング */}
       {isSubmitting && (
         <div className="fixed w-full h-full flex flex-center justify-center items-center">
-{/*
-          <div className="flex justify-center" aria-label="読み込み中">
-            <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-          </div>
-          <div className="flex justify-center" aria-label="読み込み中">
-            <div className="animate-spin h-8 w-8 bg-blue-300 rounded-xl"></div>
-          </div>
-*/}
           <div className="flex flex-col items-center space-y-4 border-green-500 bg-green-200 p-5 rounded-2xl">
             {/* 歯車のように回るスピナー */}
             <div className="animate-spin h-22 w-22 border-4 border-blue-500 rounded-full border-t-transparent"></div>
@@ -262,6 +283,14 @@ export default function HomePage() {
           Powered by Next.js, Tailwind CSS, and Zod.
         </p>
       </footer>
+      
+      {isMyModalOpened &&
+        <MyModal
+          isOpen={isMyModalOpened}
+          onApplied={() => { setIsMyModalOpened(false) }}
+          onCanceled={() => { setIsMyModalOpened(false) }}
+        />
+      }
     </div>
   );
 }
