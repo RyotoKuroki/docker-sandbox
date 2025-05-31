@@ -307,6 +307,40 @@ export default function HomePage() {
 
             // toast
             toast.success("Succeeeeeeeeeeeded!");
+
+            toast(
+              <div className="flex flex-col space-y-2">
+                <div className="flex flex-row space-x-2 items-center">
+                  <div>Good Morning</div>
+                </div>
+                <div className='flex flex-row'>
+                  <div>
+                    <div className="flex justify-center items-center">
+                      <div className="bg-yellow-400 rounded-full w-24 h-24 flex justify-center items-center">
+                        <div className="bg-yellow-500 rounded-full w-16 h-16 flex justify-center items-center">
+                          <div className="bg-yellow-600 rounded-full w-8 h-8"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-center items-center">
+                      <div className="bg-yellow-400 rounded-full w-24 h-24 flex justify-center items-center">
+                        <div className="bg-yellow-500 rounded-full w-16 h-16 flex justify-center items-center">
+                          <div className="bg-yellow-600 rounded-full w-8 h-8"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-center justify-center items-center h-full w-full p-3">
+                      <h3>
+                        カスタムトーストだぜええええええ！！！
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              </div>);
           }}
         />
       }
