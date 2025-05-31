@@ -26,6 +26,7 @@ const FormSchema = z.object({
   email: z.string()
           .email({ message: '有効なメールアドレスを入力してください。' }),
   nickname: z.string()
+          .max(10, { message: '10以下で入力してください' })
           .nullish(),
   // age: z.number().min(18, { message: '18歳以上である必要があります。' }).optional(),
   subs: z.array(subEmailsSchema).min(1, {
@@ -164,7 +165,6 @@ export default function HomePage() {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor={methods.register(uiItemNames.nickname).name}
             >
               ニックネーム
             </label>
@@ -173,12 +173,10 @@ export default function HomePage() {
               className={`mt-1 block w-full px-3 py-2 border ${
                 errors.nickname ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-              aria-describedby={`${uiItemNames.nickname}-${uiItemNames.error}`}
               {...methods.register(uiItemNames.nickname)}
-              id={methods.register(uiItemNames.nickname).name}
             />
             {errors.nickname && (
-              <p id={`${uiItemNames.nickname}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
+              <p className="mt-1 text-xs text-red-500">
                 {errors.nickname[0]}
               </p>
             )}
@@ -192,7 +190,6 @@ export default function HomePage() {
             {fields.map((sub, index) => (
               <div className='flex flex-row justify-start items-start gap-2' key={index}>
                 <div className='w-[30%] items-start'>
-                  {/*
                   <input
                     type="number"
                     className={`mt-1 block w-full px-3 py-2 border ${
@@ -205,22 +202,6 @@ export default function HomePage() {
                   />
                   {methods.formState.errors.subs?.[index]?.priority && (
                     <p id={`${uiItemNames.emailList}-${index}-${uiItemNames.priority}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
-                      {methods.formState.errors.subs[index]?.priority?.message}
-                    </p>
-                  )}
-                  */}
-                  {/* 以下、削れる部分を削って最小限としたバージョン（※例えば、アクセシビリティを考慮しない場合は aria-describedby を削れる。。。） */}
-                  <input
-                    type="number"
-                    className={`mt-1 block w-full px-3 py-2 border ${
-                      (methods.formState.errors.subs?.[index]?.priority) ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                    {...methods.register(`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`)}
-                    id={`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`}
-                    placeholder='優先度'
-                  />
-                  {methods.formState.errors.subs?.[index]?.priority && (
-                    <p className="mt-1 text-xs text-red-500">
                       {methods.formState.errors.subs[index]?.priority?.message}
                     </p>
                   )}
