@@ -12,7 +12,8 @@ const MyModal = (
 ) => {
   return props.open ? (
     <>
-      <div className="bg-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-48 p-5 flex flex-col items-start rounded-xl absolute z-2000">
+      <div className="bg-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+                      w-80 h-48 p-5 flex flex-col items-start rounded-xl absolute z-2000">
         <div>
           {props.children}
         </div>
