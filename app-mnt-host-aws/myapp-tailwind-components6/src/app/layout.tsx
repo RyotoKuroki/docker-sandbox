@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+//import { Toaster } from "@/components/ui/sonner";
+//import { toast } from "sonner"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +30,19 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+
+        {/**
+         * TODO
+         * 全画面で利用するならば、ここに記述した方が良い
+         * テストがてら、zod-login-2に記載してる！！
+         * 
+         * //import { Toaster } from "@/components/ui/sonner";
+         * //import { toast } from "sonner"
+         */}
+        {/*
+        <Toaster richColors />
+        */}
+
       </body>
     </html>
   );

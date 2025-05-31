@@ -9,6 +9,7 @@ import {
 } from "./schemas";
 import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
+import { Toaster, toast } from 'sonner';
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
@@ -64,7 +65,7 @@ export default function HomePage() {
   // useFieldArray を使用して、アイテムの配列を管理
   const { fields, append, remove } = useFieldArray({
       control: methods.control,
-      name: 'subs',
+      name: uiItemNames.emailList, // 'subs',
   });
 
 
@@ -91,8 +92,37 @@ export default function HomePage() {
       const fieldErrors = result.error.flatten().fieldErrors as FormErrors;
       setErrors(fieldErrors);
       setIsSubmitting(false);
+      
+      // error toast
+      /*
+      toast.error("よく見て！見つめて！！", {
+          description: "よく見てよく見て！！",
+          action: {
+            label: "✕",
+            onClick: () => console.log("Undo"),
+        },
+      });
+      */
+      toast.error(
+      <>
+        <div className='h-full w-full bg-green-300 bounded-xl p-3 m-3'>
+          <h3>Boooooooooo!!!</h3>
+        </div>
+      </>
+      );
+      
+
       return false;
     }
+
+    // toast
+    toast("Event has been created", {
+      description: "Sunday, December 03, 2023 at 9:00 AM",
+      action: {
+        label: "✕",
+        onClick: () => console.log("Undo"),
+      },
+    });
 
     // DB更新処理
     setTimeout(() => {
@@ -105,7 +135,8 @@ export default function HomePage() {
       // フォームをリセット（任意）
       // setFormData({ name: '', email: '' });
       setIsSubmitting(false);
-    }, 3000);
+      
+    }, 1100);
   };
 
   return (
@@ -271,9 +302,18 @@ export default function HomePage() {
           open={isMyModalOpened}
           children={<CompletedArea title='Succeeeeeeeeeeded!!' className='' />}
           onCancel={() => setIsMyModalOpened(false)}
-          onOk={() => setIsMyModalOpened(false)}
+          onOk={() => {
+            setIsMyModalOpened(false)
+
+            // toast
+            toast.success("Succeeeeeeeeeeeded!");
+          }}
         />
       }
+    
+    {/** TODO 全画面で利用するならば、layout.tsx に記述した方が良い！ */}
+    <Toaster richColors />
+
     </div>
   );
 }
