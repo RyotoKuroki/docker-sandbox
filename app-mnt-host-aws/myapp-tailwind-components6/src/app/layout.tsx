@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 //import { Toaster } from "@/components/ui/sonner";
 //import { toast } from "sonner"
-//import Loading from "./loading";
+import Loading from "./loading";
 import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Suspense fallback={ <div className="loading-spinner">読み込み中...</div>}>
+    <Suspense fallback={ <Loading />}>
       {
         <html lang="en">
           <body
