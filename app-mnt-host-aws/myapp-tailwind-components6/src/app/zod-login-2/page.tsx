@@ -1,6 +1,6 @@
 'use client';
 
-import { useState/*, Suspense*/ } from 'react';
+import { useEffect, useMemo, useState/*, Suspense*/ } from 'react';
 //import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'; // これに変更
@@ -64,13 +64,13 @@ export default function LoginPage() {
  */
 export default function HomePage() {
   const searchParams = useSearchParams()
-  const params1 = searchParams && searchParams.get('p1')
-  console.log(params1)
-  
-  // toast
-  if (params1)
-    toast.info(`URLパラメータ：P1=${params1}`);
+  // 初期化処理
+  useEffect(() => {
+    const params1 = searchParams && searchParams.get('p1')
 
+    // toast
+    if (params1) toast.info(`URLパラメータ：P1=${params1}`);
+  }, []);
 
   const [errors, setErrors] = useState<Partial<FormErrors>>({});
   const [submittedData, setSubmittedData] = useState<FormInput | null>(null);
