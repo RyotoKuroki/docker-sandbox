@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState/*, Suspense*/ } from 'react';
 //import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'; // これに変更
@@ -12,6 +12,7 @@ import { Toaster, toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
 import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
+//import Loading from "@/app/loading";
 
 // schema of sub-email.
 const subEmailsSchema = z.object({
@@ -41,13 +42,13 @@ type FormInput = z.infer<typeof FormSchema>;
 // generate zod-object -> type of errors
 type FormErrors = z.inferFlattenedErrors<typeof FormSchema>['fieldErrors'];
 
-
+/*
 // エクスポートするページコンポーネント
 export default function LoginPage() {
   // ローディングコンポーネント
-  const Loading = () => (
-    <div className="loading-spinner">読み込み中...</div>
-  );
+//  const Loading = () => (
+//    <div className="loading-spinner">読み込み中...</div>
+//  );
 
   return (
     <Suspense fallback={<Loading />}>
@@ -55,16 +56,21 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+*/
 
 /**
  * 
  * @returns 
  */
-export function HomePage() {
-  
+export default function HomePage() {
   const searchParams = useSearchParams()
   const params1 = searchParams && searchParams.get('p1')
   console.log(params1)
+  
+  // toast
+  if (params1)
+    toast.info(`URLパラメータ：P1=${params1}`);
+
 
   const [errors, setErrors] = useState<Partial<FormErrors>>({});
   const [submittedData, setSubmittedData] = useState<FormInput | null>(null);
