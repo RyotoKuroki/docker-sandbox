@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'; // これに変更
 import { z } from 'zod';
 import {
   uiItemNames,
+  cautionName,
 } from "./schemas";
 import { Toaster, toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
@@ -171,10 +172,15 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+      
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center text-gray-700 mb-6">
           お問い合わせフォーム
         </h1>
+
+        <p className='whitespace-pre-wrap py-5'>
+          {cautionName}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
