@@ -51,7 +51,9 @@ export default function Home() {
           </a>
         </div>
         <div className="w-full">
-          <a href="/zod-login-2" className="border-2 rounded-xl text-xl p-3 text-blue-700 w-full" >Myサンプルページ &gt; &gt;</a>
+          <a href="/zod-login-2?p1=パラメ１" className="border-2 rounded-xl text-xl p-3 text-blue-700 w-full" >
+            Myサンプルページ &gt; &gt;
+          </a>
         </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
