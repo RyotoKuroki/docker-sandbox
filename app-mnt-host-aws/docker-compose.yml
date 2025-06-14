@@ -14,12 +14,15 @@ services:
     depends_on:
       - db # PostgreSQLコンテナが起動後に起動します
       - localstack
+      - maildev # MailDevコンテナが起動後に起動します
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME} # PostgreSQL接続URL
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_REGION=us-east-1
+      - SMTP_HOST=maildev #maildev
+      - SMTP_PORT=1025    #maildev
     #command: npm run dev
     command: sh -c "npm install; npm run dev"
     develop: # watch設定をここに追加
@@ -79,8 +82,8 @@ services:
     image: maildev/maildev:latest # MailDevの公式イメージを使用
     container_name: myapp-maildev # コンテナ名を指定
     ports:
-      - "1080:80"   # MailDevのWeb UI (ブラウザでアクセス)
       - "1025:25"   # SMTPサーバー (アプリケーションからメール送信)
+      - "1080:80"   # MailDevのWeb UI (ブラウザでアクセス)
     restart: always
     # depends_on: # MailDevは他のサービスに依存しないことが多いので、必須ではない
     #   - app
