@@ -14,50 +14,8 @@ import { useSearchParams } from 'next/navigation';
 import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
 //import Loading from "@/app/loading";
-
-// schema of sub-email.
-const subEmailsSchema = z.object({
-    priority: z.coerce.number()
-          .min(1, { message: '1以上で入力してください' })
-          .max(100, { message: '100以下で入力してください' }),
-    subEmail: z.string()
-          .email({ message: '有効なメールアドレスを入力してください。' }),
-});
-// schema of this page form.
-const FormSchema = z.object({
-  name: z.string()
-          .nonempty({ message: '名前を入力してください！' })
-          .min(2, { message: '2文字以上で入力してください。' }),
-  email: z.string()
-          .email({ message: '有効なメールアドレスを入力してください。' }),
-  nickname: z.string()
-          .max(10, { message: '10以下で入力してください' })
-          .nullish(),
-  // age: z.number().min(18, { message: '18歳以上である必要があります。' }).optional(),
-  subs: z.array(subEmailsSchema).min(1, {
-      message: '少なくとも1つのアイテムを追加してください',
-  }),
-});
-// generate zod-object -> type
-type FormInput = z.infer<typeof FormSchema>;
-// generate zod-object -> type of errors
-type FormErrors = z.inferFlattenedErrors<typeof FormSchema>['fieldErrors'];
-
-/*
-// エクスポートするページコンポーネント
-export default function LoginPage() {
-  // ローディングコンポーネント
-//  const Loading = () => (
-//    <div className="loading-spinner">読み込み中...</div>
-//  );
-
-  return (
-    <Suspense fallback={<Loading />}>
-      <HomePage />
-    </Suspense>
-  );
-}
-*/
+import { FormInput, FormErrors, FormSchema } from "./schemas";
+import { ResultServ, serverFunction } from './server-actions/action-sample';
 
 /**
  * 
@@ -79,7 +37,6 @@ export default function HomePage() {
   const [isMyModalOpened, setIsMyModalOpened] = useState(false);
 
   const methods = useForm<FormInput>({
-    //resolver: standardSchemaResolver(FormSchema),
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "xxx",
@@ -99,53 +56,69 @@ export default function HomePage() {
       name: uiItemNames.emailList, // 'subs',
   });
 
-
   /** submit処理 */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     
     // ページリロードをキャンセル
     e.preventDefault();
-    
-    // フォームデータ取得
-    const formData = methods.getValues();
 
     setIsSubmitting(true);
     setErrors({});
     setSubmittedData(null);
     setIsMyModalOpened(false);
+    
+    // フォームデータ取得
+    const formData = methods.getValues();
+    let toastMsg = "";
+    let resultData = null;
+    // validation
+    switch (formData.validSide) {
 
-    // 入力データのバリデーション
-    const result = FormSchema.safeParse(formData);
-    //alert(JSON.stringify(result, null, 4))
+      case "CLIENT":
+        // validate on server-side
+        const resultValidClient = FormSchema.safeParse(formData);
+        if (!resultValidClient.success) {
+          // バリデーションエラーがある場合
+          const fieldErrors = resultValidClient.error.flatten().fieldErrors as FormErrors;
+          setErrors(fieldErrors);
+          setIsSubmitting(false);
+          
+          toastMsg = "err on【CLIENT】.";
+        } else {
+          resultData = resultValidClient.data;
+        }
+        break;
 
-    if (!result.success) {
-      // バリデーションエラーがある場合
-      const fieldErrors = result.error.flatten().fieldErrors as FormErrors;
-      setErrors(fieldErrors);
-      setIsSubmitting(false);
-      
-      // error toast
-      /*
-      toast.error("よく見て！見つめて！！", {
-          description: "よく見てよく見て！！",
-          action: {
-            label: "✕",
-            onClick: () => console.log("Undo"),
-        },
-      });
-      */
-      toast.error(
-      <>
-        <div className='h-full w-full bg-green-300 bounded-xl p-3 m-3'>
-          <h3>Boooooooooo!!!</h3>
-        </div>
-      </>
-      );
-      
+      case "SERVER":
+        const resultValidServer = await serverFunction(formData) as ResultServ;
+        if (!resultValidServer.success) {
+          const fieldErrors = resultValidServer.error as FormErrors;
+          setErrors(fieldErrors);
+          setIsSubmitting(false);
 
-      return false;
+          toastMsg = "err on【SERVER】.";
+        } else {
+          resultData = resultValidServer.data;
+        }
+        break;
+      default:
+        return;
     }
 
+    if (toastMsg) {
+      toast.error(
+        <>
+          <div className='h-full w-full bg-green-300 bounded-xl p-3 m-3'>
+            <h3>{toastMsg}</h3>
+          </div>
+        </>
+      );
+      return;
+    }
+
+    // 入力データのバリデーション（Client側で行うサンプル）
+/*
+*/
     // toast
     toast("Event has been created", {
       description: "Sunday, December 03, 2023 at 9:00 AM",
@@ -160,8 +133,8 @@ export default function HomePage() {
       // バリデーション成功
       // ここでAPIへのデータ送信などの非同期処理を行うことができます
       // 例: await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Form submitted successfully:', result.data);
-      setSubmittedData(result.data);
+      console.log('Form submitted successfully:', resultData);
+      setSubmittedData(resultData);
       setIsMyModalOpened(true);
       // フォームをリセット（任意）
       // setFormData({ name: '', email: '' });
@@ -292,6 +265,18 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className='flex flex-row gap-5'>
+            <div>
+              バリデーション処理
+            </div>
+            <div className='flex flex-row gap-3'>
+              <label><input type='radio' value="CLIENT"
+              {...methods.register(uiItemNames.validSide)} defaultChecked /> Client</label>
+              <label><input type='radio' value="SERVER"
+              {...methods.register(uiItemNames.validSide)} /> Server</label>
+            </div>
           </div>
 
           <div>
