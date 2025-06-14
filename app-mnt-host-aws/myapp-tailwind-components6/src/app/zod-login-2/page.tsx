@@ -15,7 +15,8 @@ import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
 //import Loading from "@/app/loading";
 import { FormInput, FormErrors, FormSchema } from "./schemas";
-import { ResultServ, serverFunction } from './server-actions/action-sample';
+import { ResultServ, sendMail, validateOnServer } from './server-actions/action-sample';
+import Link from 'next/link';
 
 /**
  * 
@@ -90,7 +91,7 @@ export default function HomePage() {
         break;
 
       case "SERVER":
-        const resultValidServer = await serverFunction(formData) as ResultServ;
+        const resultValidServer = await validateOnServer(formData) as ResultServ;
         if (!resultValidServer.success) {
           const fieldErrors = resultValidServer.error as FormErrors;
           setErrors(fieldErrors);
@@ -127,6 +128,8 @@ export default function HomePage() {
         onClick: () => console.log("Undo"),
       },
     });
+
+    await sendMail();
 
     // DB更新処理
     setTimeout(() => {
@@ -287,6 +290,10 @@ export default function HomePage() {
             >
               {isSubmitting ? '送信中...' : '送信'}
             </button>
+          </div>
+          
+          <div className='w-full text-center'>
+            <Link href="http://localhost:1080" target="_blank" className='text-blue-500'><u>maildev</u></Link>
           </div>
         </form>
 
