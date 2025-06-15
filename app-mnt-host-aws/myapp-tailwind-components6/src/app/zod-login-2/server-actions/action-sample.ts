@@ -6,6 +6,7 @@ import {
 } from "@/lib/mail-send-core/option-schemas";
 import { sendMessage, } from "@/lib/mail-send-core/send-mail-core";
 import { readSyncMailIdentifyAsUtf8 } from "@/lib/mail-send-core/use-templates/message-template-sample1";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 const sendMailAsMessageText = async () => {
     // text形式
@@ -16,8 +17,12 @@ const sendMailAsMessageText = async () => {
         subject: "done!",
         text: "本日は\r\nお日柄も\r\nよく！",
     } as SendMailOptsAsMessageText;
+
     try {
-        await sendMessage(mailOptsAsText);
+        const resultMail = await sendMessage(mailOptsAsText) as SMTPTransport.SentMessageInfo;
+        if (!resultMail.accepted)
+            throw new Error(resultMail.messageId);
+
     } catch (error) {
         console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsText)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
@@ -47,8 +52,12 @@ const sendMailAsMessageHtml = async () => {
     よく！
 </div>`,
     } as SendMailOptsAsMessageHtml;
+
     try {
-        await sendMessage(mailOptsAsHtml);
+        const resultMail = await sendMessage(mailOptsAsHtml) as SMTPTransport.SentMessageInfo;
+        if (!resultMail.accepted)
+            throw new Error(resultMail.messageId);
+        
     } catch (error) {
         console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsHtml)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
@@ -74,8 +83,12 @@ const sendMailUseTemplate = async () => {
         html: mailTemplate.bodyMessage,
         attachments: mailTemplate.assets,
     } as SendMailOptsAsMessageHtml;
+
     try {
-        await sendMessage(mailOptsAsHtml);
+        const resultMail = await sendMessage(mailOptsAsHtml) as SMTPTransport.SentMessageInfo;
+        if (!resultMail.accepted)
+            throw new Error(resultMail.messageId);
+        
     } catch (error) {
         console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsHtml)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
