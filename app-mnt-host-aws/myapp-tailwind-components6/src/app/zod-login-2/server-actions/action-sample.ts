@@ -4,10 +4,9 @@ import fs from "fs";
 import {
     SendMailOptsAsMessageHtml,
     SendMailOptsAsMessageText
-} from "../../../lib/mail-send-core/option-schemas";
-import { sendMessageHtml, sendMessageText } from "../../../lib/mail-send-core/send-mail-core";
-import { readSyncMailIdentifyAsUtf8 } from "../../../lib/mail-send-core/use-message-template-sample";
-
+} from "@/lib/mail-send-core/option-schemas";
+import { sendMessage, /*sendMessageHtml, sendMessageText*/ } from "@/lib/mail-send-core/send-mail-core";
+import { readSyncMailIdentifyAsUtf8 } from "@/lib/mail-send-core/use-templates/message-template-sample1";
 
 const sendMailAsMessageText = async () => {
     // text形式    
@@ -20,7 +19,7 @@ const sendMailAsMessageText = async () => {
         text: "本日は\r\nお日柄も\r\nよく！",
     } as SendMailOptsAsMessageText;
     try {
-        await sendMessageText(mailOptsAsText);
+        await sendMessage(mailOptsAsText);
     } catch (error) {
         console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsText)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
@@ -52,7 +51,7 @@ const sendMailAsMessageHtml = async () => {
 </div>`,
     } as SendMailOptsAsMessageHtml;
     try {
-        await sendMessageHtml(mailOptsAsHtml);
+        await sendMessage(mailOptsAsHtml);
     } catch (error) {
         console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsHtml)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
@@ -64,9 +63,10 @@ const sendMailAsMessageHtml = async () => {
     }
 }
 
-const sendMailFromTemplate = async () => {
+const sendMailUseTemplate = async () => {
 
-    const mailTemplate = await readSyncMailIdentifyAsUtf8()
+    const mailTemplate = await readSyncMailIdentifyAsUtf8("./src/app/assets/mails/message-templates/sample1");
+
     // Html形式    
     const mailOptsAsHtml = {
         from: '"R.K" <rk@somedomain.com>',
@@ -75,13 +75,10 @@ const sendMailFromTemplate = async () => {
         cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
         subject: mailTemplate.title,
         html: mailTemplate.bodyMessage,
-        attachments: [{
-            filename: 'hoge.jpg',
-            content: fs.createReadStream(mailTemplate.bodyMessagePath)
-        },]
+        attachments: mailTemplate.assets,
     } as SendMailOptsAsMessageHtml;
     try {
-        await sendMessageHtml(mailOptsAsHtml);
+        await sendMessage(mailOptsAsHtml);
     } catch (error) {
         console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsHtml)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
@@ -98,12 +95,14 @@ const sendMailFromTemplate = async () => {
  */
 const sendMail = async () => {
 
+    // テキスト形式メッセージのサンプル
     await sendMailAsMessageText();
 
+    // Html形式メッセージのサンプル
     await sendMailAsMessageHtml();
 
-    await sendMailFromTemplate();
-
+    // テンプレートファイルを利用したメッセージのサンプル
+    await sendMailUseTemplate();
 }
 
 export {

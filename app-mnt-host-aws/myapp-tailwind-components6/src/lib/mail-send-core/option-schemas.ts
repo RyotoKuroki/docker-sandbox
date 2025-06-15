@@ -8,6 +8,7 @@ type SendMailOptsAsMessageText = Mail.Options & {
     text: string,
     attachments?: Attachment[] | undefined;
 }
+
 type SendMailOptsAsMessageHtml = Mail.Options & {
     from: string,
     to: string | string[],
