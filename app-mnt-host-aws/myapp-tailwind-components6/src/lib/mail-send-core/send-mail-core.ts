@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 import {
     SendMailOptsAsMessageHtml,
     SendMailOptsAsMessageText
-} from "./schemas-mail-options";
+} from "./option-schemas";
 
 const getTransport = () => {
     
