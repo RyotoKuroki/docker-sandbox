@@ -1,59 +1,16 @@
 "use server";
 
-import { FormErrors, FormInput, FormSchema } from "../schemas";
-import nodemailer from "nodemailer";
 import {
     SendMailOptsAsMessageHtml,
     SendMailOptsAsMessageText
-} from "./schemas-mail-options";
-
-type ResultServ = {
-    success: boolean,
-    data?: any,
-    error?: any,
-}
-
-const validateOnServer = async (
-    formInput: FormInput
-): Promise<ResultServ> => {
-
-    const resultValidation = FormSchema.safeParse(formInput);
-    if (!resultValidation.success) {
-        return {
-            success: false,
-            //error: resultValidation.error,
-            error: resultValidation.error.flatten().fieldErrors as FormErrors
-        } as ResultServ;
-    }
-
-    return {
-        success: true,
-        data: resultValidation.data,
-    } as ResultServ;
-}
+} from "../mail-send-core/schemas-mail-options";
+import { sendMessageHtml, sendMessageText } from "../mail-send-core/action-sample";
+import { readFileSyncAsUtf8, readSyncMailIdentifyAsUtf8 } from "../mail-send-core/use-message-template-sample";
 
 
-const sendMail = async () => {
-/*
-    const messageSample1: SendMailOptsAsMessageText = {
-        from: '"R.K" <rk@somedomain.com>',
-        to: "hoge@somedomain.com",
-        //to: "hoge@somedomain.com",
-        cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
-        subject: "done!",
-        text: "本日は\r\nお日柄も\r\nよく！",
-    };
-    
-    const resultMail = await transporter.sendMail({
-        from: '"R.K" <rk@somedomain.com>',
-        to: "hoge@somedomain.com",
-        //to: "hoge@somedomain.com",
-        cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
-        subject: "done!",
-        text: "本日は\r\nお日柄も\r\nよく！",
-    });
-*/
-    const mailOpts = {
+const sendMailAsMessageText = async () => {
+    // text形式    
+    const mailOptsAsText = {
         from: '"R.K" <rk@somedomain.com>',
         to: "hoge@somedomain.com",
         //to: "hoge@somedomain.com",
@@ -62,9 +19,9 @@ const sendMail = async () => {
         text: "本日は\r\nお日柄も\r\nよく！",
     } as SendMailOptsAsMessageText;
     try {
-        await sendMessageText(mailOpts);
+        await sendMessageText(mailOptsAsText);
     } catch (error) {
-        console.error(`メール送信エラー opts= ${JSON.stringify(mailOpts)}:`, error);
+        console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsText)}:`, error);
         // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
         if ((error as any).responseCode) {
             console.error('SMTP レスポンスコード:', (error as any).responseCode);
@@ -72,37 +29,79 @@ const sendMail = async () => {
         }
         throw new Error('メールの送信に失敗しました。'); // 呼び出し元でエラーを処理できるよう再スロー
     }
-    
 }
 
-const getTransport = () => {
-    
-    return nodemailer.createTransport({
-        //host: process.env.SMTP_HOST ?? "maildev",
-        //port: Number(process.env.SMTP_PORT ?? "1025"),
-        host: "localhost",
-        port: 1025,
-        secure: false, // 開発環境のMailDevではSSL/TLSは通常無効
-        ignoreTLS: true, // TLS接続を無視（MailDev用）
-        // auth: { // MailDevは通常認証不要ですが、必要に応じて設定
-        //     user: 'your_username',
-        //     pass: 'your_password',
-    });
-
+const sendMailAsMessageHtml = async () => {
+    // Html形式    
+    const mailOptsAsHtml = {
+        from: '"R.K" <rk@somedomain.com>',
+        to: "hoge@somedomain.com",
+        //to: "hoge@somedomain.com",
+        cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
+        subject: "done!",
+        html: `
+<div>
+    <b>本日は</b>
+</div>
+<div>
+    お日柄も
+</div>
+<div style="color: red; background: yellow;">
+    よく！
+</div>`,
+    } as SendMailOptsAsMessageHtml;
+    try {
+        await sendMessageHtml(mailOptsAsHtml);
+    } catch (error) {
+        console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsHtml)}:`, error);
+        // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
+        if ((error as any).responseCode) {
+            console.error('SMTP レスポンスコード:', (error as any).responseCode);
+            console.error('SMTP レスポンスメッセージ:', (error as any).response);
+        }
+        throw new Error('メールの送信に失敗しました。'); // 呼び出し元でエラーを処理できるよう再スロー
+    }
 }
 
-const sendMessageText = async (
-    messageSample1: SendMailOptsAsMessageText
-) => {
-    const transporter = getTransport();
-    const resultMail = await transporter.sendMail(messageSample1);
+const sendMailFromTemplate = async () => {
+
+    const mailTemplate = await readSyncMailIdentifyAsUtf8()
+    // Html形式    
+    const mailOptsAsHtml = {
+        from: '"R.K" <rk@somedomain.com>',
+        to: "hoge@somedomain.com",
+        //to: "hoge@somedomain.com",
+        cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
+        subject: mailTemplate.title,
+        html: mailTemplate.bodyMessage,
+    } as SendMailOptsAsMessageHtml;
+    try {
+        await sendMessageHtml(mailOptsAsHtml);
+    } catch (error) {
+        console.error(`メール送信エラー opts= ${JSON.stringify(mailOptsAsHtml)}:`, error);
+        // エラーの詳細をログに出力（例: Nodemailerのエラーレスポンス）
+        if ((error as any).responseCode) {
+            console.error('SMTP レスポンスコード:', (error as any).responseCode);
+            console.error('SMTP レスポンスメッセージ:', (error as any).response);
+        }
+        throw new Error('メールの送信に失敗しました。'); // 呼び出し元でエラーを処理できるよう再スロー
+    }
 }
 
+/**
+ * メール送信
+ */
+const sendMail = async () => {
+
+    await sendMailAsMessageText();
+
+    await sendMailAsMessageHtml();
+
+    await sendMailFromTemplate();
+
+}
 
 export {
-    validateOnServer,
-    type ResultServ,
-
     sendMail,
 }
 

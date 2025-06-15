@@ -15,7 +15,8 @@ import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
 //import Loading from "@/app/loading";
 import { FormInput, FormErrors, FormSchema } from "./schemas";
-import { ResultServ, sendMail, validateOnServer } from './server-actions/action-sample';
+import { sendMail } from './server-actions/action-sample';
+import { ResultServ, validateOnServer } from './server-actions/action-validation';
 import Link from 'next/link';
 
 /**
