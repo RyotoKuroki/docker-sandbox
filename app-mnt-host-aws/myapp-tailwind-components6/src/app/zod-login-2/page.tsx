@@ -118,9 +118,6 @@ export default function HomePage() {
       return;
     }
 
-    // 入力データのバリデーション（Client側で行うサンプル）
-/*
-*/
     // toast
     toast("Event has been created", {
       description: "Sunday, December 03, 2023 at 9:00 AM",

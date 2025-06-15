@@ -1,19 +1,17 @@
 "use server";
 
-import fs from "fs";
 import {
     SendMailOptsAsMessageHtml,
     SendMailOptsAsMessageText
 } from "@/lib/mail-send-core/option-schemas";
-import { sendMessage, /*sendMessageHtml, sendMessageText*/ } from "@/lib/mail-send-core/send-mail-core";
+import { sendMessage, } from "@/lib/mail-send-core/send-mail-core";
 import { readSyncMailIdentifyAsUtf8 } from "@/lib/mail-send-core/use-templates/message-template-sample1";
 
 const sendMailAsMessageText = async () => {
-    // text形式    
+    // text形式
     const mailOptsAsText = {
         from: '"R.K" <rk@somedomain.com>',
         to: "hoge@somedomain.com",
-        //to: "hoge@somedomain.com",
         cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
         subject: "done!",
         text: "本日は\r\nお日柄も\r\nよく！",
@@ -32,11 +30,10 @@ const sendMailAsMessageText = async () => {
 }
 
 const sendMailAsMessageHtml = async () => {
-    // Html形式    
+    // Html形式
     const mailOptsAsHtml = {
         from: '"R.K" <rk@somedomain.com>',
         to: "hoge@somedomain.com",
-        //to: "hoge@somedomain.com",
         cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
         subject: "done!",
         html: `
@@ -67,11 +64,10 @@ const sendMailUseTemplate = async () => {
 
     const mailTemplate = await readSyncMailIdentifyAsUtf8("./src/app/assets/mails/message-templates/sample1");
 
-    // Html形式    
+    // use template
     const mailOptsAsHtml = {
         from: '"R.K" <rk@somedomain.com>',
         to: "hoge@somedomain.com",
-        //to: "hoge@somedomain.com",
         cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
         subject: mailTemplate.title,
         html: mailTemplate.bodyMessage,
@@ -86,7 +82,7 @@ const sendMailUseTemplate = async () => {
             console.error('SMTP レスポンスコード:', (error as any).responseCode);
             console.error('SMTP レスポンスメッセージ:', (error as any).response);
         }
-        throw new Error('メールの送信に失敗しました。'); // 呼び出し元でエラーを処理できるよう再スロー
+        throw new Error('メールの送信に失敗しました。');
     }
 }
 
