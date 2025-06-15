@@ -3,9 +3,9 @@
 import {
     SendMailOptsAsMessageHtml,
     SendMailOptsAsMessageText
-} from "../mail-send-core/schemas-mail-options";
-import { sendMessageHtml, sendMessageText } from "../mail-send-core/action-sample";
-import { readFileSyncAsUtf8, readSyncMailIdentifyAsUtf8 } from "../mail-send-core/use-message-template-sample";
+} from "../../../lib/mail-send-core/schemas-mail-options";
+import { sendMessageHtml, sendMessageText } from "../../../lib/mail-send-core/action-sample";
+import { readFileSyncAsUtf8, readSyncMailIdentifyAsUtf8 } from "../../../lib/mail-send-core/use-message-template-sample";
 
 
 const sendMailAsMessageText = async () => {
