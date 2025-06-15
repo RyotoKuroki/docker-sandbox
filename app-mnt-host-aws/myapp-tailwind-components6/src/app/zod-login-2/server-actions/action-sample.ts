@@ -62,7 +62,7 @@ const sendMailAsMessageHtml = async () => {
 
 const sendMailUseTemplate = async () => {
 
-    const mailTemplate = await readSyncMailIdentifyAsUtf8("./src/app/assets/mails/message-templates/sample1");
+    const mailTemplate = readSyncMailIdentifyAsUtf8("./src/app/assets/mails/message-templates/sample1");
 
     // use template
     const mailOptsAsHtml = {
