@@ -1,5 +1,6 @@
 "use server";
 
+import fs from "fs";
 import {
     SendMailOptsAsMessageHtml,
     SendMailOptsAsMessageText
@@ -74,6 +75,10 @@ const sendMailFromTemplate = async () => {
         cc: ["aaa@somedomain.com", "bbb@somedomain.com", "ccc@somedomain.com"],
         subject: mailTemplate.title,
         html: mailTemplate.bodyMessage,
+        attachments: [{
+            filename: 'hoge.jpg',
+            content: fs.createReadStream(mailTemplate.bodyMessagePath)
+        },]
     } as SendMailOptsAsMessageHtml;
     try {
         await sendMessageHtml(mailOptsAsHtml);
