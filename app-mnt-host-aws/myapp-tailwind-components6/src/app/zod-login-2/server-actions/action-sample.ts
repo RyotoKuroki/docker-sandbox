@@ -62,7 +62,8 @@ const sendMailAsMessageHtml = async () => {
 
 const sendMailUseTemplate = async () => {
 
-    const mailTemplate = readSyncMailIdentifyAsUtf8("./src/app/assets/mails/message-templates/sample1");
+    const mailTemplateDirectory = "./src/app/assets/mails/message-templates";
+    const mailTemplate = readSyncMailIdentifyAsUtf8(`${mailTemplateDirectory}/sample1`);
 
     // use template
     const mailOptsAsHtml = {
