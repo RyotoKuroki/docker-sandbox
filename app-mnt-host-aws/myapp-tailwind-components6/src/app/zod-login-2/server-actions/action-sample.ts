@@ -78,8 +78,10 @@ const sendMail = async () => {
 const getTransport = () => {
     
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST ?? "maildev",
-        port: Number(process.env.SMTP_PORT ?? "1025"),
+        //host: process.env.SMTP_HOST ?? "maildev",
+        //port: Number(process.env.SMTP_PORT ?? "1025"),
+        host: "localhost",
+        port: 1025,
         secure: false, // 開発環境のMailDevではSSL/TLSは通常無効
         ignoreTLS: true, // TLS接続を無視（MailDev用）
         // auth: { // MailDevは通常認証不要ですが、必要に応じて設定
