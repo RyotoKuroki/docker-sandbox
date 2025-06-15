@@ -82,8 +82,8 @@ services:
     image: maildev/maildev:latest # MailDevの公式イメージを使用
     container_name: myapp-maildev # コンテナ名を指定
     ports:
-      - "1025:25"   # SMTPサーバー (アプリケーションからメール送信)
-      - "1080:80"   # MailDevのWeb UI (ブラウザでアクセス)
+      - "1080:1080"   # MailDevのWeb UI (ブラウザでアクセス)
+      - "1025:1025"   # SMTPサーバー (アプリケーションからメール送信)
     restart: always
     # depends_on: # MailDevは他のサービスに依存しないことが多いので、必須ではない
     #   - app
