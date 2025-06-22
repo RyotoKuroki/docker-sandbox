@@ -39,7 +39,7 @@ services:
     restart: always
   # PostgreSQLコンテナ
   db:
-    image: postgres:17.4-alpine # PostgreSQL 14のAlpineイメージを使用します
+    image: postgres:17.5-alpine # PostgreSQL 14のAlpineイメージを使用します
     container_name: myapp-postgres-aws
     volumes:
       - postgres_data:/var/lib/postgresql/data # データを永続化するためのボリューム
