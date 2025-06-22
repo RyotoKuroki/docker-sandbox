@@ -25,3 +25,8 @@ model user_info {
   address1 String?  @db.VarChar(256)
   address2 String?  @db.VarChar(256)
 }
+
+model logging {
+  id       String    @id @db.Uuid
+  loged_at DateTime? @db.Timestamp(6)
+}

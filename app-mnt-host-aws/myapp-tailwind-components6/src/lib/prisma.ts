@@ -1,6 +1,7 @@
 // lib/prisma.ts
 
-import { PrismaClient } from '@prisma/client';
+//import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@/generated/prisma";
 
 // グローバルオブジェクトにPrismaClientインスタンスをキャッシュ
 declare global {
@@ -20,4 +21,4 @@ if (process.env.NODE_ENV === 'production') {
   prisma = global.prisma;
 }
 
-export default prisma;
+export default prisma as PrismaClient;

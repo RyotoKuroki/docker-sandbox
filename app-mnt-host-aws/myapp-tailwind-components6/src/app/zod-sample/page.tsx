@@ -18,6 +18,10 @@ import { FormInput, FormErrors, FormSchema } from "./schemas";
 import { sendMail } from './server-actions/action-sample';
 import { ResultServ, validateOnServer } from './server-actions/action-validation';
 import Link from 'next/link';
+import { inDtoType } from './server-actions/initialize/action-initialize-schema';
+import { initializeAction } from './server-actions/initialize/action-initialize';
+import { ApiResultCommon } from '@/lib/api/ApiResultCommon';
+import { compareAsc, format } from "date-fns";
 
 /**
  * 
@@ -27,10 +31,25 @@ export default function HomePage() {
   const searchParams = useSearchParams()
   // 初期化処理
   useEffect(() => {
+    
     const params1 = searchParams && searchParams.get('p1')
+    if (params1)
+      toast.info(`URLパラメータ：P1=${params1}`);
 
-    // toast
-    if (params1) toast.info(`URLパラメータ：P1=${params1}`);
+    const init = async () => {
+      const inDto = {
+        //currentDate: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+        currentDate: new Date().toISOString(),
+      } as inDtoType;
+      const resultInitAction = await initializeAction(inDto) as ApiResultCommon;
+      if (!resultInitAction.success) {
+        toast.error(`初期化失敗=${resultInitAction.errorMsg}`);
+      } else {
+        toast.info(`初期化成功=${resultInitAction.data.currentDate}`);
+      }
+    };
+    init();
+
   }, []);
 
   const [errors, setErrors] = useState<Partial<FormErrors>>({});
@@ -38,7 +57,7 @@ export default function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMyModalOpened, setIsMyModalOpened] = useState(false);
 
-  const methods = useForm<FormInput>({
+  const proxyForm = useForm<FormInput>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "xxx",
@@ -54,7 +73,7 @@ export default function HomePage() {
   });
   // useFieldArray を使用して、アイテムの配列を管理
   const { fields, append, remove } = useFieldArray({
-      control: methods.control,
+      control: proxyForm.control,
       name: uiItemNames.emailList, // 'subs',
   });
 
@@ -70,7 +89,7 @@ export default function HomePage() {
     setIsMyModalOpened(false);
     
     // フォームデータ取得
-    const formData = methods.getValues();
+    const formData = proxyForm.getValues();
     let toastMsg = "";
     let resultData = null;
     // validation
@@ -160,7 +179,7 @@ export default function HomePage() {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor={methods.register(uiItemNames.name).name}
+              htmlFor={proxyForm.register(uiItemNames.name).name}
             >
               氏名
             </label>
@@ -170,8 +189,8 @@ export default function HomePage() {
                 errors.name ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
               aria-describedby={`${uiItemNames.name}-${uiItemNames.error}`}
-              {...methods.register(uiItemNames.name)}
-              id={methods.register(uiItemNames.name).name}
+              {...proxyForm.register(uiItemNames.name)}
+              id={proxyForm.register(uiItemNames.name).name}
             />
             {errors.name && (
               <p id={`${uiItemNames.name}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
@@ -183,7 +202,7 @@ export default function HomePage() {
           <div>
             <label
               className="block text-sm font-medium text-gray-700 mb-1"
-              htmlFor={methods.register(uiItemNames.email).name}
+              htmlFor={proxyForm.register(uiItemNames.email).name}
             >
               メールアドレス
             </label>
@@ -193,8 +212,8 @@ export default function HomePage() {
                 errors.email ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
               aria-describedby={`${uiItemNames.email}-${uiItemNames.error}`}
-              {...methods.register(uiItemNames.email)}
-              id={methods.register(uiItemNames.email).name}
+              {...proxyForm.register(uiItemNames.email)}
+              id={proxyForm.register(uiItemNames.email).name}
             />
             {errors.email && (
               <p id={`${uiItemNames.email}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
@@ -214,7 +233,7 @@ export default function HomePage() {
               className={`mt-1 block w-full px-3 py-2 border ${
                 errors.nickname ? 'border-red-500' : 'border-gray-300'
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-              {...methods.register(uiItemNames.nickname)}
+              {...proxyForm.register(uiItemNames.nickname)}
             />
             {errors.nickname && (
               <p className="mt-1 text-xs text-red-500">
@@ -234,16 +253,16 @@ export default function HomePage() {
                   <input
                     type="number"
                     className={`mt-1 block w-full px-3 py-2 border ${
-                      (methods.formState.errors.subs?.[index]?.priority) ? 'border-red-500' : 'border-gray-300'
+                      (proxyForm.formState.errors.subs?.[index]?.priority) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     aria-describedby={`${uiItemNames.emailList}-${index}-${uiItemNames.priority}-${uiItemNames.error}`}
-                    {...methods.register(`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`)}
+                    {...proxyForm.register(`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`)}
                     id={`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`}
                     placeholder='優先度'
                   />
-                  {methods.formState.errors.subs?.[index]?.priority && (
+                  {proxyForm.formState.errors.subs?.[index]?.priority && (
                     <p id={`${uiItemNames.emailList}-${index}-${uiItemNames.priority}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
-                      {methods.formState.errors.subs[index]?.priority?.message}
+                      {proxyForm.formState.errors.subs[index]?.priority?.message}
                     </p>
                   )}
                 </div>
@@ -251,16 +270,16 @@ export default function HomePage() {
                   <input
                     type="email"
                     className={`mt-1 block w-full px-3 py-2 border ${
-                      (methods.formState.errors.subs?.[index]?.subEmail) ? 'border-red-500' : 'border-gray-300'
+                      (proxyForm.formState.errors.subs?.[index]?.subEmail) ? 'border-red-500' : 'border-gray-300'
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     aria-describedby={`${uiItemNames.emailList}-${index}-${uiItemNames.subEmail}-${uiItemNames.error}`}
-                    {...methods.register(`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`)}
+                    {...proxyForm.register(`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`)}
                     id={`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`}
                     placeholder='sub-email'
                   />
-                  {methods.formState.errors.subs?.[index]?.subEmail && (
+                  {proxyForm.formState.errors.subs?.[index]?.subEmail && (
                     <p id={`${uiItemNames.emailList}-${index}-${uiItemNames.subEmail}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
-                      {methods.formState.errors.subs[index]?.subEmail?.message}
+                      {proxyForm.formState.errors.subs[index]?.subEmail?.message}
                     </p>
                   )}
                 </div>
@@ -274,9 +293,9 @@ export default function HomePage() {
             </div>
             <div className='flex flex-row gap-3'>
               <label><input type='radio' value="CLIENT"
-              {...methods.register(uiItemNames.validSide)} defaultChecked /> Client</label>
+              {...proxyForm.register(uiItemNames.validSide)} defaultChecked /> Client</label>
               <label><input type='radio' value="SERVER"
-              {...methods.register(uiItemNames.validSide)} /> Server</label>
+              {...proxyForm.register(uiItemNames.validSide)} /> Server</label>
             </div>
           </div>
 
