@@ -14,14 +14,19 @@ import { useSearchParams } from 'next/navigation';
 import MyModal from './dialog-sample';
 import CompletedArea from './completed-area';
 //import Loading from "@/app/loading";
-import { FormInput, FormErrors, FormSchema } from "./schemas";
+import {
+  inDtoSaveSomeSchema,
+  inDtoSaveSomeType,
+  inDtoSaveSomeErrorType,
+} from "./server-actions/save-somedata/action-save-somedata-schema";
 import { sendMail } from './server-actions/action-sample';
-import { ResultServ, validateOnServer } from './server-actions/action-validation';
+//import { ResultServ, validateOnServer } from './server-actions/action-validation';
 import Link from 'next/link';
 import { inDtoType } from './server-actions/initialize/action-initialize-schema';
 import { initializeAction } from './server-actions/initialize/action-initialize';
 import { ApiResultCommon } from '@/lib/api/ApiResultCommon';
 import { compareAsc, format } from "date-fns";
+import { saveSomedataAction } from './server-actions/save-somedata/action-save-somedata';
 
 /**
  * 
@@ -54,13 +59,13 @@ export default function HomePage() {
 
   }, []);
 
-  const [errors, setErrors] = useState<Partial<FormErrors>>({});
-  const [submittedData, setSubmittedData] = useState<FormInput | null>(null);
+  const [errors, setErrors] = useState<Partial<inDtoSaveSomeErrorType>>({});
+  const [submittedData, setSubmittedData] = useState<inDtoSaveSomeType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMyModalOpened, setIsMyModalOpened] = useState(false);
 
-  const proxyForm = useForm<FormInput>({
-    resolver: zodResolver(FormSchema),
+  const proxyForm = useForm<inDtoSaveSomeType>({
+    resolver: zodResolver(inDtoSaveSomeSchema),
     defaultValues: {
       name: "xxx",
       email: "hoge@somedomain.com",
@@ -99,29 +104,33 @@ export default function HomePage() {
 
       case "CLIENT":
         // validate on server-side
-        const resultValidClient = FormSchema.safeParse(formData);
+        const resultValidClient = inDtoSaveSomeSchema.safeParse(formData);
         if (!resultValidClient.success) {
           // バリデーションエラーがある場合
-          const fieldErrors = resultValidClient.error.flatten().fieldErrors as FormErrors;
+          const fieldErrors = resultValidClient.error.flatten().fieldErrors as inDtoSaveSomeErrorType;
           setErrors(fieldErrors);
           setIsSubmitting(false);
           
-          toastMsg = "err on【CLIENT】.";
+          toastMsg = "validation-error on【CLIENT】.";
         } else {
           resultData = resultValidClient.data;
         }
         break;
 
       case "SERVER":
-        const resultValidServer = await validateOnServer(formData) as ResultServ;
-        if (!resultValidServer.success) {
-          const fieldErrors = resultValidServer.error as FormErrors;
+        //const resultValidServer = await validateOnServer(formData) as ResultServ;
+        const resultSaveSome = await saveSomedataAction(formData) as ApiResultCommon;
+        if (!resultSaveSome.success &&
+             resultSaveSome.errorOnValidate) {
+          const fieldErrors = resultSaveSome.errorOnValidate as inDtoSaveSomeErrorType;
           setErrors(fieldErrors);
           setIsSubmitting(false);
 
-          toastMsg = "err on【SERVER】.";
+          toastMsg = "validation-error on【SERVER】.";
+        } else if (!resultSaveSome.success) {
+          toastMsg = `err on【SERVER】：${resultSaveSome.errorMsg}`;
         } else {
-          resultData = resultValidServer.data;
+          resultData = resultSaveSome.data;
         }
         break;
       default:
