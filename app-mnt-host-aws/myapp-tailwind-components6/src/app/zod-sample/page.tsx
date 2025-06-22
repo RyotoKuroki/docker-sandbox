@@ -32,10 +32,12 @@ export default function HomePage() {
   // 初期化処理
   useEffect(() => {
     
+    // found search-param[p1]
     const params1 = searchParams && searchParams.get('p1')
     if (params1)
       toast.info(`URLパラメータ：P1=${params1}`);
 
+    // init in server
     const init = async () => {
       const inDto = {
         //currentDate: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
