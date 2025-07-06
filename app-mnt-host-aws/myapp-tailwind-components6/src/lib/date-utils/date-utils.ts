@@ -1,5 +1,4 @@
 // dateUtils.ts
-import { z } from "zod";
 import {
   compareAsc,
   format,
@@ -77,7 +76,7 @@ export function convertToDate(
     let combinedStr = "";
     if (isMatchYMD_hy) combinedStr += dateString;
     if (isMatchYMD_sr) combinedStr += dateString;
-    if (isMatchHM) combinedStr += ` ${timeString}`;
+    if (isMatchHM) combinedStr += `T${timeString}`;
 
     //const combinedStr = `${dateString} ${timeString}`;
     console.log("CombinedStr = ", combinedStr);
