@@ -1,0 +1,88 @@
+// lib/auth.ts
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
+
+// 仮のユーザーデータ (実際にはデータベースから取得します)
+// パスワード 'password123' のハッシュ値を使用しています
+const users = [
+  { id: '1', name: 'Test User', email: 'test@example.com', password: '$2a$10$C8.w.M5.L.u.H8.z.L.5.w.K.3.y.0.y.6.w.8.H.C.L.0.B.0.s.0.t.0.A' }, // 'password123' のハッシュ
+  { id: '2', name: 'Admin User', email: 'admin@example.com', password: '$2a$10$C8.w.M5.L.u.H8.z.L.5.w.K.3.y.0.y.6.w.8.H.C.L.0.B.0.s.0.t.0.A' }, // 'password123' のハッシュ
+];
+
+const {
+  //handlers: { GET, POST }, // APIルートハンドラー
+  handlers,
+  auth, // サーバーサイド/APIルートでセッションを取得する関数
+  signIn, // クライアントサイド/サーバーコンポーネントでサインインをトリガーする関数
+  signOut, // クライアントサイド/サーバーコンポーネントでサインアウトをトリガーする関数
+} = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET, // 環境変数から秘密鍵を取得
+  session: {
+    strategy: 'jwt', // セッションストラテジーとしてJWTを使用
+    maxAge: 60 * 60 * 24, // 1日 (JWTの有効期限)
+  },
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'text', placeholder: 'test@example.com' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        console.log('nextauth called.................')
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const user = users.find(u => u.email === credentials.email);
+
+        if (user && await bcrypt.compare(credentials.password as string, user.password)) {
+          // 認証成功: ユーザーオブジェクトを返す
+          return { id: user.id, name: user.name, email: user.email };
+        } else {
+          // 認証失敗
+          return null;
+        }
+      },
+    }),
+  ],
+  callbacks: {
+    // JWTが作成・更新されるたびに呼び出される
+    async jwt({ token, user, trigger, session }) {
+      if (user) {
+        // サインイン時、userオブジェクトをJWTトークンに追加
+        token.id = user.id;
+      }
+      // セッションの更新イベント発生時
+      if (trigger === 'update' && session?.name) {
+        token.name = session.name;
+      }
+      return token;
+    },
+    // セッションがチェックされるたびに呼び出される
+    async session({ session, token }) {
+      // JWTトークンからセッションに情報を追加
+      if (token.id) {
+        //session.user.id = token.id as string;
+        session!.user!.name = token.id as string;
+      }
+      return session;
+    },
+  },
+  pages: {
+    // カスタムログインページを指定する場合
+    // signIn: '/auth/signin',
+    // signOut: '/auth/signout',
+    // error: '/auth/error', // エラー時にリダイレクトされるページ
+    // verifyRequest: '/auth/verify-request', // メール確認が必要なプロバイダー用
+    // newUser: '/auth/new-user' // 新規ユーザー登録後のリダイレクト先
+  },
+});
+
+export {
+  auth, // サーバーサイド/APIルートでセッションを取得する関数
+  signIn, // クライアントサイド/サーバーコンポーネントでサインインをトリガーする関数
+  signOut, // クライアントサイド/サーバーコンポーネントでサインアウトをトリガーする関数
+  handlers, //: { GET, POST }, // APIルートハンドラー
+}

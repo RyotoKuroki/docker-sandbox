@@ -6,6 +6,7 @@ import "./globals.css";
 import Loading from "./loading";
 import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
+import AuthProvider from '@/components/ui/auth-provider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,13 @@ export default function RootLayout({
   return (
     <Suspense fallback={ <Loading />}>
       {
-        <html lang="en">
+        <html lang="ja">
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           >
-            {children ?? <></>}
+            <AuthProvider>
+              {children ?? <></>}
+            </AuthProvider>
 
             {/**
              * TODO
