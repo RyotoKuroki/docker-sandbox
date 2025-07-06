@@ -14,15 +14,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  // {/* SessionProvider でアプリケーションをラップ */}
+  // {/* auth() から取得したセッションを渡すことで、サーバーコンポーネントでもセッションにアクセス可能になる */}
   return (
-    <html>
-      <body>
-        {/* SessionProvider でアプリケーションをラップ */}
-        {/* auth() から取得したセッションを渡すことで、サーバーコンポーネントでもセッションにアクセス可能になる */}
         <SessionProvider>
           {children}
         </SessionProvider>
-      </body>
-    </html>
   );
 }
