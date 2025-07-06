@@ -57,7 +57,7 @@ export const editDate = (
  */
 export function convertToDate(
   dateString: string,
-  timeString: string
+  timeString?: string
 ): Date | null {
 
   try {
@@ -69,19 +69,20 @@ export function convertToDate(
     const regexYMD_sr = /^\d{4}\/\d{2}\/\d{2}$/;
     const isMatchYMD_sr = regexYMD_sr.test(dateString);
 
-    // hh:mm
-    const regex_hm = /\d{2}\:\d{2}$/;
-    const isMatchHM = regex_hm.test(timeString);
-
+    if (!isMatchYMD_hy && !isMatchYMD_sr) return null;
     let combinedStr = "";
     if (isMatchYMD_hy) combinedStr += dateString;
     if (isMatchYMD_sr) combinedStr += dateString;
-    if (isMatchHM) combinedStr += `T${timeString}`;
 
-    //const combinedStr = `${dateString} ${timeString}`;
+    // hh:mm
+    if (timeString) {
+      const regex_hm = /\d{2}\:\d{2}$/;
+      const isMatchHM = regex_hm.test(timeString);
+      if (isMatchHM) combinedStr += ` ${timeString}`;
+    }
+
     console.log("CombinedStr = ", combinedStr);
-
-    const parsedDate = parse(combinedStr);
+    const parsedDate = new Date(combinedStr);
 
     if (!isValid(parsedDate)) {
       return null;
@@ -119,6 +120,8 @@ export const fmt = (
   date: Date,
   fmt: DateFormat | string
 ) => {
+  if (!date) return "";
+
   return format(date, fmt);
 }
 
