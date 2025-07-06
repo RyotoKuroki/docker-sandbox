@@ -75,11 +75,10 @@ export function convertToDate(
     if (isMatchYMD_sr) combinedStr += dateString;
 
     // hh:mm
-    if (timeString) {
-      const regex_hm = /\d{2}\:\d{2}$/;
-      const isMatchHM = regex_hm.test(timeString);
-      if (isMatchHM) combinedStr += ` ${timeString}`;
-    }
+    const regex_hm = /\d{2}\:\d{2}$/;
+    const isMatchHM = regex_hm.test(timeString ?? "");
+    if (isMatchHM) combinedStr += ` ${timeString}`;
+    else combinedStr += ` 00:00`;
 
     console.log("CombinedStr = ", combinedStr);
     const parsedDate = new Date(combinedStr);
