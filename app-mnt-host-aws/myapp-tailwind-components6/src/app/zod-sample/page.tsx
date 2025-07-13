@@ -205,7 +205,7 @@ export default function HomePage() {
           <BreadcrumbItem>
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-                Components
+                logs
                 <ChevronDownIcon />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
