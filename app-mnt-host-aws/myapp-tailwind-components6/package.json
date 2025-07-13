@@ -16,6 +16,7 @@
     "@date-fns/tz": "^1.2.0",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.10.1",
+    "@radix-ui/react-slot": "^1.2.3",
     "@types/date-fns": "^2.5.3",
     "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.2",
