@@ -1,25 +1,22 @@
 "use client";
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
-  LabelInputBlockArea,
-  LabelInputBlock,
-  LabelBlock,
   InputBlock,
-
+  InputBlockNoBG,
+  LabelBlock,
+  LabelBlockNoBG,
+  LabelInputBlock,
+  LabelInputBlockArea,
   LabelInputBlockAreaNoBG,
   LabelInputBlockNoBG,
-  LabelBlockNoBG,
-  InputBlockNoBG,
 } from "@/app/components/LabelInputBlock";
+import { useState } from "react";
+import { z } from "zod";
 
 // Zod スキーマの定義
 const FormSchema = z.object({
-  name: z.string().min(1, { message: '名前を入力してください。' }),
-  email: z.string().email({ message: '有効なメールアドレスを入力してください。' }),
+  name: z.string().min(1, { message: "名前を入力してください。" }),
+  email: z.string().email({ message: "有効なメールアドレスを入力してください。" }),
   // 必要に応じて他のフィールドを追加できます
   // age: z.number().min(18, { message: '18歳以上である必要があります。' }).optional(),
 });
@@ -28,13 +25,12 @@ const FormSchema = z.object({
 type FormInput = z.infer<typeof FormSchema>;
 
 // エラーメッセージの型を定義（Zodのflatten()を利用する場合）
-type FormErrors = z.inferFlattenedErrors<typeof FormSchema>['fieldErrors'];
+type FormErrors = z.inferFlattenedErrors<typeof FormSchema>["fieldErrors"];
 
 export default function Home() {
-
   const [formData, setFormData] = useState<Partial<FormInput>>({
-    name: '',
-    email: '',
+    name: "",
+    email: "",
   });
   const [errors, setErrors] = useState<Partial<FormErrors>>({});
   const [submittedData, setSubmittedData] = useState<FormInput | null>(null);
@@ -70,7 +66,7 @@ export default function Home() {
     // バリデーション成功
     // ここでAPIへのデータ送信などの非同期処理を行うことができます
     // 例: await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Form submitted successfully:', result.data);
+    console.log("Form submitted successfully:", result.data);
     setSubmittedData(result.data);
     // フォームをリセット（任意）
     // setFormData({ name: '', email: '' });
@@ -80,10 +76,8 @@ export default function Home() {
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-center justify-center">
-
         {/*  spacer */}
         <div className="flex-col space-y-4 w-[95%] my-4">
-
           {/*  title */}
           <div className="flex flex-row-3">
             <h1>xxxxxxxxxxxxxxx</h1>
@@ -92,15 +86,12 @@ export default function Home() {
 
           {/*  body（別ファイル） */}
           <div className="flex-col space-y-7">
-
             {/*  section */}
             <div>
               <h3>単票形式サンプル１</h3>
               <LabelInputBlockArea>
-                <LabelInputBlock className='h-[77px]'>
-                  <LabelBlock>
-                    ラベルるるるるr
-                  </LabelBlock>
+                <LabelInputBlock className="h-[77px]">
+                  <LabelBlock>ラベルるるるるr</LabelBlock>
                   <InputBlock className="flex flex-row space-x-3">
                     <div>
                       <label>
@@ -114,45 +105,44 @@ export default function Home() {
                     </div>
                   </InputBlock>
                 </LabelInputBlock>
-                <LabelInputBlock className='h-[77px]'>
-                  <LabelBlock>
-                    ラベルるるるるr
-                  </LabelBlock>
+                <LabelInputBlock className="h-[77px]">
+                  <LabelBlock>ラベルるるるるr</LabelBlock>
                   <InputBlock>
                     <div className="flex flex-col items-center space-y-3 block flex-start justify-start">
-                      <label className='block w-full'>
+                      <label className="block w-full">
                         <input type="radio" /> aaaaaaa
                       </label>
-                      <label className='block w-full'>
+                      <label className="block w-full">
                         <input type="radio" /> bbbbbbbbbbb
                       </label>
                     </div>
                   </InputBlock>
                 </LabelInputBlock>
 
-                <LabelInputBlock className='h-[77px]'>
+                <LabelInputBlock className="h-[77px]">
                   <LabelBlock className="w-[300px]">
                     <label htmlFor="name">
-                      <span className='text-red-500'>*</span>なまえ
-                        {errors.name && (
-                          <p id="name-error" className="mt-1 text-xs text-red-500">
-                            {errors.name.join(', ')}
-                          </p>
-                        )}
+                      <span className="text-red-500">*</span>なまえ
+                      {errors.name && (
+                        <p id="name-error" className="mt-1 text-xs text-red-500">
+                          {errors.name.join(", ")}
+                        </p>
+                      )}
                     </label>
                   </LabelBlock>
                   <InputBlock className="flex flex-col">
-                      <input
-                        id="name"
-                        defaultValue={formData.name || ''}
-                        onChange={handleChange}
-                        className="w-full h-full border" />
-                          {errors.name && (
-                            <p id="name-error" className="mt-1 text-xs text-red-500">
-                              {errors.name.join(', ')}
-                            </p>
-                          )}
-{/*
+                    <input
+                      id="name"
+                      defaultValue={formData.name || ""}
+                      onChange={handleChange}
+                      className="w-full h-full border"
+                    />
+                    {errors.name && (
+                      <p id="name-error" className="mt-1 text-xs text-red-500">
+                        {errors.name.join(", ")}
+                      </p>
+                    )}
+                    {/*
                     <div className=' h-full w-full'>
                       <input
                         id="name"
@@ -170,30 +160,31 @@ export default function Home() {
 */}
                   </InputBlock>
                 </LabelInputBlock>
-                <LabelInputBlock className='h-[77px]'>
+                <LabelInputBlock className="h-[77px]">
                   <LabelBlock className="w-[300px]">
                     <label htmlFor="email">
-                      <span className='text-red-500'>*</span>E-mail
-                        {errors.email && (
-                          <p id="email-error" className="mt-1 text-xs text-red-500">
-                            {errors.email.join(', ')}
-                          </p>
-                        )}
+                      <span className="text-red-500">*</span>E-mail
+                      {errors.email && (
+                        <p id="email-error" className="mt-1 text-xs text-red-500">
+                          {errors.email.join(", ")}
+                        </p>
+                      )}
                     </label>
                   </LabelBlock>
                   <InputBlock className="flex flex-col">
                     <input
                       id="email"
-                      type='email'
-                      value={formData.email || ''}
+                      type="email"
+                      value={formData.email || ""}
                       onChange={handleChange}
-                      className="w-full h-[70%] border" />
-                        {errors.email && (
-                          <p id="email-error" className="mt-1 text-xs text-red-500">
-                            {errors.email.join(', ')}
-                          </p>
-                        )}
-{/*
+                      className="w-full h-[70%] border"
+                    />
+                    {errors.email && (
+                      <p id="email-error" className="mt-1 text-xs text-red-500">
+                        {errors.email.join(", ")}
+                      </p>
+                    )}
+                    {/*
                     <div className=' h-full w-full'>
                       <input
                         id="email"
@@ -211,12 +202,10 @@ export default function Home() {
 */}
                   </InputBlock>
                 </LabelInputBlock>
-                <LabelInputBlock className='h-[160px]'>
-                  <LabelBlock className="w-[300px] items-start">
-                    ラベルるるるるrdsfawergewedfw
-                  </LabelBlock>
-                  <InputBlock className='items-start'>
-                    <textarea className="w-full h-[70%] resize-none border" ></textarea>
+                <LabelInputBlock className="h-[160px]">
+                  <LabelBlock className="w-[300px] items-start">ラベルるるるるrdsfawergewedfw</LabelBlock>
+                  <InputBlock className="items-start">
+                    <textarea className="w-full h-[70%] resize-none border"></textarea>
                   </InputBlock>
                 </LabelInputBlock>
               </LabelInputBlockArea>
@@ -227,7 +216,7 @@ export default function Home() {
                 disabled={isSubmitting}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
               >
-                {isSubmitting ? '送信中...' : '送信'}
+                {isSubmitting ? "送信中..." : "送信"}
               </button>
             </div>
 
@@ -237,26 +226,20 @@ export default function Home() {
               <LabelInputBlockArea className="flex flex-row">
                 {/* １列目 */}
                 <div className="w-[40%]">
-                  <LabelInputBlock className='h-[55px]'>
-                    <LabelBlock>
-                      ラベル１
-                    </LabelBlock>
+                  <LabelInputBlock className="h-[55px]">
+                    <LabelBlock>ラベル１</LabelBlock>
                     <InputBlock className="border-r">
                       <input className="w-full h-full border" />
                     </InputBlock>
                   </LabelInputBlock>
-                  <LabelInputBlock className='h-[55px]'>
-                    <LabelBlock className="w-[100px]">
-                      ラベル２
-                    </LabelBlock>
+                  <LabelInputBlock className="h-[55px]">
+                    <LabelBlock className="w-[100px]">ラベル２</LabelBlock>
                     <InputBlock className="border-r">
                       <input className="w-full h-full border" />
                     </InputBlock>
                   </LabelInputBlock>
-                  <LabelInputBlock className='h-[55px]'>
-                    <LabelBlock className="w-[100px] items-end">
-                      下詰め
-                    </LabelBlock>
+                  <LabelInputBlock className="h-[55px]">
+                    <LabelBlock className="w-[100px] items-end">下詰め</LabelBlock>
                     <InputBlock className="border-r">
                       <input className="w-full h-full border" />
                     </InputBlock>
@@ -264,26 +247,20 @@ export default function Home() {
                 </div>
                 {/* ２列目 */}
                 <div className="w-[40%]">
-                  <LabelInputBlock className='h-[55px]'>
-                    <LabelBlock className="">
-                      ラベルるるるるr
-                    </LabelBlock>
-                    <InputBlock className='border-r'>
-                      <input className="w-full h-full border" />
-                    </InputBlock>
-                  </LabelInputBlock>
-                  <LabelInputBlock className='h-[55px]'>
-                    <LabelBlock>
-                    ラベルるるるるr
-                    </LabelBlock>
+                  <LabelInputBlock className="h-[55px]">
+                    <LabelBlock className="">ラベルるるるるr</LabelBlock>
                     <InputBlock className="border-r">
                       <input className="w-full h-full border" />
                     </InputBlock>
                   </LabelInputBlock>
-                  <LabelInputBlock className='h-[55px]'>
-                    <LabelBlock className="items-start">
-                    上詰め
-                    </LabelBlock>
+                  <LabelInputBlock className="h-[55px]">
+                    <LabelBlock>ラベルるるるるr</LabelBlock>
+                    <InputBlock className="border-r">
+                      <input className="w-full h-full border" />
+                    </InputBlock>
+                  </LabelInputBlock>
+                  <LabelInputBlock className="h-[55px]">
+                    <LabelBlock className="items-start">上詰め</LabelBlock>
                     <InputBlock className="border-r">
                       <input className="w-full h-full border" />
                     </InputBlock>
@@ -291,7 +268,7 @@ export default function Home() {
                 </div>
                 {/* ２列目 */}
                 <div className="flex-1 p-1">
-                  <img className='border w-full h-full' alt='hoge'></img>
+                  <img className="border w-full h-full" alt="hoge"></img>
                 </div>
               </LabelInputBlockArea>
             </div>
@@ -300,34 +277,25 @@ export default function Home() {
             <div>
               <h3>単票形式サンプル３</h3>
               <LabelInputBlockAreaNoBG>
-                <LabelInputBlockNoBG className='h-[55px]'>
-                  <LabelBlockNoBG className="">
-                    ラベルるるるるr
-                  </LabelBlockNoBG>
+                <LabelInputBlockNoBG className="h-[55px]">
+                  <LabelBlockNoBG className="">ラベルるるるるr</LabelBlockNoBG>
                   <InputBlockNoBG className="">
                     <input className="border w-[400px] h-full" />
                   </InputBlockNoBG>
                 </LabelInputBlockNoBG>
-                <LabelInputBlockNoBG className='h-[55px]'>
-                  <LabelBlockNoBG className="">
-                    * ラベルるるるるr
-                  </LabelBlockNoBG>
+                <LabelInputBlockNoBG className="h-[55px]">
+                  <LabelBlockNoBG className="">* ラベルるるるるr</LabelBlockNoBG>
                   <InputBlockNoBG className="">
-                    <input value={123} className="border w-[400px] h-full"/>
+                    <input value={123} className="border w-[400px] h-full" />
                   </InputBlockNoBG>
                 </LabelInputBlockNoBG>
               </LabelInputBlockAreaNoBG>
             </div>
 
             {/*  section */}
-            <div className="bg-yellow-300">
-              cccccccccccccccccccccccccccccccccc
-            </div>
-
+            <div className="bg-yellow-300">cccccccccccccccccccccccccccccccccc</div>
           </div>
-
         </div>
-
       </div>
     </form>
   );
