@@ -72,6 +72,7 @@ export const authOptions: NextAuthOptions = {
     // トークンに何を含めるか
 
     async jwt({ token, user }) {
+      console.log(`★１：セッションタイムアウト後はここは通らない。`);
       console.log(`called authOptions - jwt in callbacks.`);
 
       if (user?.name) {
@@ -85,6 +86,7 @@ export const authOptions: NextAuthOptions = {
 
     // セッションがチェックされるたびに呼び出される
     async session({ session, token }) {
+      console.log(`★２：セッションタイムアウト後はここは通らない。`);
       console.log(`called authOptions - session in callbacks.`);
 
       // JWTトークンからセッションに情報を追加
