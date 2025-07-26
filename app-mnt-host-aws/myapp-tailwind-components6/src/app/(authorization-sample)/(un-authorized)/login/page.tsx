@@ -23,7 +23,15 @@ export default function SignInPage() {
   };
 
   return (
-    <div>
+    <div className="p-3">
+      <div>
+        ID:
+        <input type="text" className={`mt-1 block w-[200px] px-3 py-2 border`} />
+      </div>
+      <div>
+        PS:
+        <input className={`mt-1 block w-[200px] px-3 py-2 border`} type="password" />
+      </div>
       <button onClick={handleSignIn} className="border rounded p-3 m-3">
         ログイン
       </button>
