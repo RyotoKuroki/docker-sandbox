@@ -12,6 +12,9 @@ import {
 } from "@/app/components/LabelInputBlock";
 import { useState } from "react";
 import { z } from "zod";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useParams, useSearchParams } from "next/navigation";
 
 // Zod スキーマの定義
 const FormSchema = z.object({
@@ -28,6 +31,14 @@ type FormInput = z.infer<typeof FormSchema>;
 type FormErrors = z.inferFlattenedErrors<typeof FormSchema>["fieldErrors"];
 
 export default function Home() {
+  //const router = useRouter();
+  // const sess = useSession({
+  //   required: true,
+  //   onUnauthenticated: () => {
+  //     if (router) router.push("/login");
+  //   },
+  // });
+
   const [formData, setFormData] = useState<Partial<FormInput>>({
     name: "",
     email: "",

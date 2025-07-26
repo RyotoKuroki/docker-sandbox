@@ -12,7 +12,7 @@ export default function SignInPage() {
       // ログイン処理後のリダイレクト先
 
       //callbackUrl: '/welcome',
-      callbackUrl: "/zod-authorized",
+      callbackUrl: "/zod-sample?p1=ppprm",
 
       // 以降はクレデンシャル情報
 
