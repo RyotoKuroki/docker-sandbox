@@ -125,33 +125,33 @@ export const fmt = (date: Date, formatType: DateFormat | string) => {
 export const getDateEssence = (
   date: Date,
 ): {
-  /** 元号 */
+  /** 元号を取得（例：令和） */
   era: string;
-  /** 年 */
+  /** 年を取得 */
   year: {
-    /** 和暦 */
+    /** 年を取得（和暦） */
     asEra: number;
-    /** 西暦 */
+    /** 年を取得（西暦） */
     asGregorian: number;
   };
-  /** 月 */
+  /** 月を取得 */
   month: {
     /** 機械にとって標準の月（例：1月を『０』で表現） */
     asMachine: number;
     /** 人間にとって標準の月（例：1月を『1』で表現） */
     asHuman: number;
   };
-  /** 日 */
+  /** 日を取得 */
   day: number;
-  /** 時 */
+  /** 時を取得 */
   hour: number;
-  /** 分 */
+  /** 分を取得 */
   minute: number;
-  /** 秒 */
+  /** 秒を取得 */
   second: number;
-  /** ㍉秒 */
+  /** ㍉秒を取得 */
   msecond: number;
-  /** 曜日 */
+  /** 曜日を取得 */
   dayOfWeek: {
     /** 日本語表記（ロング） */
     jpl: string;
