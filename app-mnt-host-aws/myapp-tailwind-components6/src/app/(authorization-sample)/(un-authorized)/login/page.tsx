@@ -29,6 +29,7 @@ export default function SignInPage() {
   const dateEssence = dateUtils.getDateEssence(new Date());
   console.log(JSON.stringify(dateEssence));
 
+  // 現在日時：例）2025(令和)7年7月27日 - 10時55分23秒118㍉秒
   const currentDateTime = `${dateEssence!.year.asGregorian}(${dateEssence!.era})${dateEssence!.year.asEra}年${
     dateEssence!.month.asHuman
   }月${dateEssence!.day}日 - ${dateEssence!.hour}時${dateEssence!.minute}分${dateEssence!.second}秒${
