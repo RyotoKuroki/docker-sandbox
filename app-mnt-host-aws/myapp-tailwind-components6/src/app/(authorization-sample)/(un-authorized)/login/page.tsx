@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import * as dateUtils from "@/lib/date-utils/date-utils";
 
 // ログイン画面 ボタンを押したらログイン成功画面へ遷移
 
@@ -22,8 +23,21 @@ export default function SignInPage() {
     });
   };
 
+  const dt = new Date();
+  console.log(JSON.stringify(dt));
+
+  const dateEssence = dateUtils.getDateEssence(new Date());
+  console.log(JSON.stringify(dateEssence));
+
+  const currentDateTime = `${dateEssence!.year.asGregorian}(${dateEssence!.era})${dateEssence!.year.asEra}年${
+    dateEssence!.month.asHuman
+  }月${dateEssence!.day}日 - ${dateEssence!.hour}時${dateEssence!.minute}分${dateEssence!.second}秒${
+    dateEssence!.msecond
+  }㍉秒`;
+
   return (
     <div className="p-3">
+      <div>現在時刻：{currentDateTime}</div>
       <div>
         ID:
         <input type="text" className={`mt-1 block w-[200px] px-3 py-2 border`} />
