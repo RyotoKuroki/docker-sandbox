@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { BreadcrumbCustom } from "@/app/components/breadcrumb/BreadcrumbCustom";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Home() {
+export default function page() {
+  const router = useRouter();
+
   const [links, setLinks] = useState<
     { lable: string; path: string; args: { [key: string]: string | number | Date } }[]
   >([]);
@@ -13,25 +16,59 @@ export default function Home() {
   const commonBtnStyle = " border-gray-300 rounded-lg bg-blue-400 hover:bg-blue-100 p-3 ";
   return (
     <div className="flex flex-center justify-center w-full">
-      <div className="grid grid-cols-2 w-full">
-        <div className={`${commonGridContentStyle} h-[30px] col-span-2`}>
+      <div className="grid grid-cols-4 w-full">
+        <div className={`${commonGridContentStyle} h-[30px] col-span-4`}>
           <BreadcrumbCustom homeLabel="Home" history={links} />
         </div>
-        <div className={`${commonGridContentStyle} bg-green-300 col-span-2`}>
+        <div className={`${commonGridContentStyle} h-[30px] col-span-4`}>
+          <h1>Page1</h1>
+        </div>
+        <div className={`${commonGridContentStyle} bg-green-300 col-span-4`}>
           <div className="flex flex-row items-center">
             <label>param1：</label>
             <input className="w-full border-gray-300 bg-cyan-100 hover:bg-red-300 rounded-lg p-3" />
           </div>
         </div>
+        <div className={`${commonGridContentStyle} bg-blue-300 opacity-[0.2]`}>
+          <button
+            disabled={true}
+            className={`${commonBtnStyle} `}
+            onClick={() => {
+              router.push(`/bread-samples/page1`);
+            }}
+          >
+            to Page1
+          </button>
+        </div>
         <div className={`${commonGridContentStyle} bg-yellow-300`}>
-          <Link className={`${commonBtnStyle} `} href={`/bread-samples/page2`}>
+          <button
+            className={`${commonBtnStyle} `}
+            onClick={() => {
+              router.push(`/bread-samples/page2`);
+            }}
+          >
             to Page2
-          </Link>
+          </button>
         </div>
         <div className={`${commonGridContentStyle} bg-pink-300`}>
-          <Link className={`${commonBtnStyle} `} href={`/bread-samples/page3`}>
+          <button
+            className={`${commonBtnStyle} `}
+            onClick={() => {
+              router.push(`/bread-samples/page3`);
+            }}
+          >
             to Page3
-          </Link>
+          </button>
+        </div>
+        <div className={`${commonGridContentStyle} bg-blue-300`}>
+          <button
+            className={`${commonBtnStyle} `}
+            onClick={() => {
+              router.push(`/bread-samples/page4`);
+            }}
+          >
+            to Page4
+          </button>
         </div>
       </div>
     </div>

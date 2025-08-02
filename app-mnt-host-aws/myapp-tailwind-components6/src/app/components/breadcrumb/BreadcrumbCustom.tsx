@@ -36,7 +36,7 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(({ homeLabel, hi
           {/* home */}
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">{homeLabel}</Link>
+              <Link href="/bread-samples/page1">{homeLabel}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           {/* divide */}
