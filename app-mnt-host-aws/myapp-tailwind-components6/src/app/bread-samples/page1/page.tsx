@@ -1,16 +1,75 @@
 "use client";
 
+import { z } from "zod";
 import Link from "next/link";
 import { BreadcrumbCustom } from "@/app/components/breadcrumb/BreadcrumbCustom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { BreadCrumbPageParamsInterface } from "@/app/components/breadcrumb/interfaces/BreadCrumbPageParamsInterface";
+import {
+  addBreadcrumbLog,
+  clearBreadcrumbLogs,
+  getBreadcrumbLog,
+  getBreadcrumbLogs,
+} from "@/app/components/breadcrumb/utils/BreadCrumbUtils";
+import { page1ParamsSchemaType } from "./page1-params";
+
+/** 画面Aの具象インターフェイス */
+class Page1Params implements BreadCrumbPageParamsInterface {
+  breadDisplayLabel!: string;
+  pagePath!: string;
+
+  value1Str!: string;
+  value2Num!: number;
+  value3Date!: Date;
+
+  toJsonStr = () => {
+    return JSON.stringify(this);
+  };
+  fromJsonStr = (value: string) => {
+    const _schema = z.object({
+      value1Str: z.string(),
+      value2Num: z.number(),
+      value3Date: z.date(),
+    });
+    type myParams = z.infer<typeof _schema>;
+    try {
+      const params: myParams = _schema.parse(JSON.parse(value));
+      console.log("fromJson : ", params);
+
+      this.value1Str = params.value1Str;
+      this.value2Num = params.value2Num;
+      this.value3Date = params.value3Date;
+    } catch (error) {
+      console.error("バリデーションエラー:", error);
+    }
+  };
+
+  UserSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string().email(),
+  });
+}
 
 export default function page() {
   const router = useRouter();
 
-  const [links, setLinks] = useState<
-    { lable: string; path: string; args: { [key: string]: string | number | Date } }[]
-  >([]);
+  const [links, setLinks] = useState<any[]>([]);
+
+  useEffect(() => {
+    clearBreadcrumbLogs();
+    const obj = new Page1Params();
+    obj.breadDisplayLabel = "Huhuhu";
+    obj.pagePath = "/bread-samples/page1";
+    obj.value1Str = "1";
+    obj.value2Num = 1;
+    obj.value3Date = new Date(2025, 1, 1);
+    addBreadcrumbLog(obj);
+
+    const logs = getBreadcrumbLogs();
+    setLinks(logs);
+  });
 
   const commonGridContentStyle = " min-w-[200px] min-h-[100px] p-3 flex justify-center items-center ";
   const commonBtnStyle = " border-gray-300 rounded-lg bg-blue-400 hover:bg-blue-100 p-3 ";

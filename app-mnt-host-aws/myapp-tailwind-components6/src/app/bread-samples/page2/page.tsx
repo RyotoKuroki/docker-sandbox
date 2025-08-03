@@ -1,9 +1,43 @@
 "use client";
 
+import { z } from "zod";
 import Link from "next/link";
 import { BreadcrumbCustom } from "@/app/components/breadcrumb/BreadcrumbCustom";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BreadCrumbPageParamsInterface } from "@/app/components/breadcrumb/interfaces/BreadCrumbPageParamsInterface";
+
+/** 画面Aの具象インターフェイス */
+class Page2Interface implements BreadCrumbPageParamsInterface {
+  breadDisplayLabel!: string;
+  pagePath!: string;
+
+  value1Str!: string;
+  value2Num!: number;
+  value3Date!: Date;
+
+  toJsonStr = () => {
+    return JSON.stringify(this);
+  };
+  fromJsonStr = (value: string) => {
+    const _schema = z.object({
+      value1Str: z.string(),
+      value2Num: z.number(),
+      value3Date: z.date(),
+    });
+    type myParams = z.infer<typeof _schema>;
+    try {
+      const params: myParams = _schema.parse(JSON.parse(value));
+      console.log("fromJson : ", params);
+
+      this.value1Str = params.value1Str;
+      this.value2Num = params.value2Num;
+      this.value3Date = params.value3Date;
+    } catch (error) {
+      console.error("バリデーションエラー:", error);
+    }
+  };
+}
 
 export default function page() {
   const router = useRouter();
