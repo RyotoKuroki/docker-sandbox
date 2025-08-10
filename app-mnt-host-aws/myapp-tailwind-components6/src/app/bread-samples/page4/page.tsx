@@ -27,7 +27,7 @@ export default function page() {
   useEffect(() => {
     const breadCrumbLog = {
       path: "/bread-samples/page4",
-      label: "ページよん",
+      label: "ページ４",
       args: {
         val1: val1,
         val2: val2,

@@ -32,7 +32,7 @@ export default function page() {
     clearBreadcrumbLogs();
     const breadCrumbLog = {
       path: "/bread-samples/page1",
-      label: "ページいち",
+      label: "ページ１",
       args: {
         val1: val1,
         val2: val2,

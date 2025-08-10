@@ -75,7 +75,7 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                       {middleLogs.map((item) => (
-                        <DropdownMenuItem>{item.label}</DropdownMenuItem>
+                        <DropdownMenuItem key={item.path}>{item.label}</DropdownMenuItem>
                       ))}
                       {/* <DropdownMenuItem>Documentation</DropdownMenuItem>
                         <DropdownMenuItem>Themes</DropdownMenuItem>
