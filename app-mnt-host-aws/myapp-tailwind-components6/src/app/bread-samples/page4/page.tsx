@@ -3,48 +3,48 @@
 import { z } from "zod";
 import Link from "next/link";
 import { BreadcrumbCustom } from "@/app/components/breadcrumb/BreadcrumbCustom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BreadCrumbPageParamsInterface } from "@/app/components/breadcrumb/interfaces/BreadCrumbPageParamsInterface";
+import { IBreadCrumbLog } from "@/app/components/breadcrumb/interfaces/IBreadCrumbLog";
+import {
+  addBreadcrumbLog,
+  clearBreadcrumbLogs,
+  getBreadcrumbLogs,
+} from "@/app/components/breadcrumb/utils/BreadCrunbUtils";
 
 /** 画面Aの具象インターフェイス */
-class Page4Interface implements BreadCrumbPageParamsInterface {
-  breadDisplayLabel!: string;
-  pagePath!: string;
-
-  value1Str!: string;
-  value2Num!: number;
-  value3Date!: Date;
-
-  toJsonStr = () => {
-    return JSON.stringify(this);
-  };
-  fromJsonStr = (value: string) => {
-    const _schema = z.object({
-      value1Str: z.string(),
-      value2Num: z.number(),
-      value3Date: z.date(),
-    });
-    type myParams = z.infer<typeof _schema>;
-    try {
-      const params: myParams = _schema.parse(JSON.parse(value));
-      console.log("fromJson : ", params);
-
-      this.value1Str = params.value1Str;
-      this.value2Num = params.value2Num;
-      this.value3Date = params.value3Date;
-    } catch (error) {
-      console.error("バリデーションエラー:", error);
-    }
+interface IPage4Params extends IBreadCrumbLog {
+  args: {
+    val1: string;
+    val2: number;
+    val3: Date;
   };
 }
 
 export default function page() {
   const router = useRouter();
 
-  const [links, setLinks] = useState<
-    { lable: string; path: string; args: { [key: string]: string | number | Date } }[]
-  >([]);
+  const [val1, setVal1] = useState("");
+  const [val2, setVal2] = useState(0);
+  const [val3, setVal3] = useState(new Date());
+
+  const [links, setLinks] = useState<IBreadCrumbLog[]>([]);
+
+  useEffect(() => {
+    const breadCrumbLog = {
+      path: "/bread-samples/page4",
+      label: "ページよん",
+      args: {
+        val1: val1,
+        val2: val2,
+        val3: val3,
+      },
+    } as IPage4Params;
+    addBreadcrumbLog(breadCrumbLog);
+
+    const logs = getBreadcrumbLogs();
+    setLinks(logs);
+  }, []);
 
   const commonGridContentStyle = " min-w-[200px] min-h-[100px] p-3 flex justify-center items-center ";
   const commonBtnStyle = " border-gray-300 rounded-lg bg-blue-400 hover:bg-blue-100 p-3 ";
@@ -52,7 +52,7 @@ export default function page() {
     <div className="flex flex-center justify-center w-full">
       <div className="grid grid-cols-4 w-full">
         <div className={`${commonGridContentStyle} h-[30px] col-span-4`}>
-          <BreadcrumbCustom homeLabel="Home" history={links} />
+          <BreadcrumbCustom homeLabel="Home" logs={links} />
         </div>
         <div className={`${commonGridContentStyle} h-[30px] col-span-4`}>
           <h1>Page4</h1>

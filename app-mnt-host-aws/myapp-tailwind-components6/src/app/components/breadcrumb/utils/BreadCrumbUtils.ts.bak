@@ -1,4 +1,4 @@
-import { BreadCrumbLogsInterface, STORAGE_KEY } from "../interfaces/BreadCrumbLogsInterface";
+import { BreadCrumbLogsInterface, STORAGE_KEY } from "../interfaces/IBreadCrumbStore";
 import { BreadCrumbPageParamsInterface } from "../interfaces/BreadCrumbPageParamsInterface";
 
 const getBreadcrumbStorage = <T extends BreadCrumbPageParamsInterface>(key: string) => {
