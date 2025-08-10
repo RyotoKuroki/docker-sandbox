@@ -5,7 +5,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
@@ -16,7 +15,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { ChevronDownIcon, SlashIcon } from "lucide-react";
 import Link from "next/link";
-import React, { forwardRef, useEffect, useMemo, useState } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import { IBreadCrumbLog } from "./interfaces/IBreadCrumbLog";
 
 interface BreadProps {
