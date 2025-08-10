@@ -23,9 +23,7 @@ interface BreadProps {
   logs: IBreadCrumbLog[]; // { lable: string; path: string; args: { [key: string]: string | number | Date } }[];
 }
 const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
-  ({ homeLabel, logs }: { homeLabel: string; logs: IBreadCrumbLog[] }, ref) => {
-    //const [allLinks, setAllLinks] = useState<IBreadCrumbLog[]>([]);
-    //const [homeLink, setHomeLink] = useState("");
+  ({ logs }: { homeLabel: string; logs: IBreadCrumbLog[] }, ref) => {
     const [first, setFirst] = useState<IBreadCrumbLog | null>(null);
     const [middleLogs, setMiddleLogs] = useState<IBreadCrumbLog[]>([]);
     const [last, setLast] = useState<IBreadCrumbLog | null>(null);
@@ -34,11 +32,12 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
       // 先頭
       const first = logs != undefined && logs.length > 0 ? logs[0] : null;
       setFirst(first);
+
       // 末尾。ただしそもそも１件ならば先頭と同値なので無視する。
       const last = logs != undefined && logs.length > 1 ? logs[logs.length - 1] : null;
       setLast(last);
+
       // ドロップダウンに隠すログリスト。ただしそもそも２件ならば先頭＋末尾と同値なので無視する。
-      debugger;
       const mids = [] as IBreadCrumbLog[];
       logs.forEach((each, index) => {
         if (index == 0 || index == logs.length - 1) return;
@@ -77,9 +76,6 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
                       {middleLogs.map((item) => (
                         <DropdownMenuItem key={item.path}>{item.label}</DropdownMenuItem>
                       ))}
-                      {/* <DropdownMenuItem>Documentation</DropdownMenuItem>
-                        <DropdownMenuItem>Themes</DropdownMenuItem>
-                        <DropdownMenuItem>GitHub</DropdownMenuItem> */}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </BreadcrumbItem>
