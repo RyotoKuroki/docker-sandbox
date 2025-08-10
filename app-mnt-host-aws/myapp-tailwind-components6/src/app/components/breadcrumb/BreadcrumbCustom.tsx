@@ -58,7 +58,7 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink>
-                    <Link href={first.path}>{first.label}a</Link>
+                    <Link href={first.path}>{first.label}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
               </>
@@ -76,7 +76,7 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                       {middleLogs.map((item) => (
-                        <DropdownMenuItem>{item.label}b</DropdownMenuItem>
+                        <DropdownMenuItem>{item.label}</DropdownMenuItem>
                       ))}
                       {/* <DropdownMenuItem>Documentation</DropdownMenuItem>
                         <DropdownMenuItem>Themes</DropdownMenuItem>
@@ -93,7 +93,7 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
                 </BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink>
-                    <Link href={last.path}>{last.label}c</Link>
+                    <Link href={last.path}>{last.label}</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
               </>
