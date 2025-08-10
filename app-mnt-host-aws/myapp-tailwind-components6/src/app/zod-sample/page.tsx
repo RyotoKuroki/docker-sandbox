@@ -47,6 +47,12 @@ import {
  */
 export default function HomePage() {
   const searchParams = useSearchParams();
+
+  const [errors, setErrors] = useState<Partial<inDtoSaveSomeErrorType>>({});
+  const [submittedData, setSubmittedData] = useState<inDtoSaveSomeType | null>(null);
+  const [isPending, setIsPending] = useState(false);
+  const [isMyModalOpened, setIsMyModalOpened] = useState(false);
+
   // 初期化処理
   useEffect(() => {
     // found search-param[p1]
@@ -55,24 +61,22 @@ export default function HomePage() {
 
     // init in server
     const init = async () => {
+      setIsPending(true);
       const inDto = {
         //currentDate: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
         currentDate: new Date().toISOString(),
       } as inDtoType;
-      const resultInitAction = (await initializeAction(inDto)) as ApiResultCommon;
+      const resultInitAction: ApiResultCommon = await initializeAction(inDto);
       if (!resultInitAction.success) {
         toast.error(`初期化失敗=${resultInitAction.errorMsg}`);
       } else {
         toast.info(`初期化成功=${resultInitAction.data.currentDate}`);
       }
     };
-    init();
+    init().finally(() => {
+      setIsPending(false);
+    });
   }, []);
-
-  const [errors, setErrors] = useState<Partial<inDtoSaveSomeErrorType>>({});
-  const [submittedData, setSubmittedData] = useState<inDtoSaveSomeType | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isMyModalOpened, setIsMyModalOpened] = useState(false);
 
   const proxyForm = useForm<inDtoSaveSomeType>({
     resolver: zodResolver(inDtoSaveSomeSchema),
@@ -99,7 +103,7 @@ export default function HomePage() {
     // ページリロードをキャンセル
     e.preventDefault();
 
-    setIsSubmitting(true);
+    setIsPending(true);
     setErrors({});
     setSubmittedData(null);
     setIsMyModalOpened(false);
@@ -117,7 +121,7 @@ export default function HomePage() {
           // バリデーションエラーがある場合
           const fieldErrors = resultValidClient.error.flatten().fieldErrors as inDtoSaveSomeErrorType;
           setErrors(fieldErrors);
-          setIsSubmitting(false);
+          setIsPending(false);
 
           toastMsg = "validation-error on【CLIENT】.";
         } else {
@@ -127,11 +131,11 @@ export default function HomePage() {
 
       case ValidatiionSideEnum.SERVER:
         //const resultValidServer = await validateOnServer(formData) as ResultServ;
-        const resultSaveSome = (await saveSomedataAction(formData)) as ApiResultCommon;
+        const resultSaveSome: ApiResultCommon = await saveSomedataAction(formData);
         if (!resultSaveSome.success && resultSaveSome.errorOnValidate) {
           const fieldErrors = resultSaveSome.errorOnValidate as inDtoSaveSomeErrorType;
           setErrors(fieldErrors);
-          setIsSubmitting(false);
+          setIsPending(false);
 
           toastMsg = "validation-error on【SERVER】.";
         } else if (!resultSaveSome.success) {
@@ -176,7 +180,7 @@ export default function HomePage() {
       setIsMyModalOpened(true);
       // フォームをリセット（任意）
       // setFormData({ name: '', email: '' });
-      setIsSubmitting(false);
+      setIsPending(false);
     }, 1100);
   };
 
@@ -348,10 +352,10 @@ export default function HomePage() {
           <div>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isPending}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
             >
-              {isSubmitting ? "送信中..." : "送信"}
+              {isPending ? "送信中..." : "送信"}
             </button>
           </div>
 
@@ -374,7 +378,7 @@ export default function HomePage() {
       </div>
 
       {/* ローディング */}
-      {isSubmitting && (
+      {isPending && (
         <div className="fixed w-full h-full flex flex-center justify-center items-center">
           <div className="flex flex-col items-center space-y-4 border-green-500 bg-green-200 p-5 rounded-2xl">
             {/* 歯車のように回るスピナー */}
