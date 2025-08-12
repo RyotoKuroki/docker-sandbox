@@ -57,28 +57,45 @@ export default function page() {
   const [links, setLinks] = useState<IBreadCrumbLog[]>([]);
 
   useEffect(() => {
-    const breadCrumbLog = {
-      path: URL_PATH,
-      queryParams: "bread=true",
-      label: BREAD_LABEL,
-      args: {
-        initArgs: {
-          val1: val1,
-          val2: val2,
-          val3: val3,
+    if (!searchParams) return;
+
+    const bParam = searchParams.get("bread");
+    if (!bParam) {
+      const breadCrumbLog = {
+        // パンくず以外の方法でアクセスされた場合のみ、パンくずにリンクを追加する
+        path: URL_PATH,
+        queryParams: "bread=true",
+        label: BREAD_LABEL,
+        args: {
+          initArgs: {
+            val1: val1,
+            val2: val2,
+            val3: val3,
+          },
+          opeArgs: {
+            val1: val1,
+            val2: val2,
+            val3: val3,
+          },
         },
-        opeArgs: {
-          val1: val1,
-          val2: val2,
-          val3: val3,
-        },
-      },
-    } as IPage4Params;
-    breadUtils.addBreadcrumbLog(breadCrumbLog);
+      } as IPage4Params;
+      breadUtils.addBreadcrumbLog(breadCrumbLog);
+    } else {
+      // パンくずの場合、前回入力値を復元する
+      const val = breadUtils.getBreadcrumbLog(URL_PATH);
+      if (val) {
+        const log = val.value as IPage4Params;
+        formProxy.reset({
+          val1: log.args.opeArgs.val1,
+          val2: log.args.opeArgs.val2,
+          val3: log.args.opeArgs.val3,
+        });
+      }
+    }
 
     const logs = breadUtils.getBreadcrumbLogs();
     setLinks(logs);
-  }, []);
+  }, [searchParams]);
 
   const handleOnLeave = (url: string) => {
     const log = {
@@ -132,7 +149,8 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page1`);
+              //router.push(`/bread-samples/page1`);
+              handleOnLeave(`/bread-samples/page1`);
             }}
           >
             to Page1
@@ -142,7 +160,8 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page2`);
+              //router.push(`/bread-samples/page2`);
+              handleOnLeave(`/bread-samples/page2`);
             }}
           >
             to Page2
@@ -152,7 +171,8 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page3`);
+              //router.push(`/bread-samples/page3`);
+              handleOnLeave(`/bread-samples/page3`);
             }}
           >
             to Page3
@@ -163,7 +183,8 @@ export default function page() {
             disabled={true}
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page4`);
+              //router.push(`/bread-samples/page4`);
+              handleOnLeave(`/bread-samples/page4`);
             }}
           >
             to Page4

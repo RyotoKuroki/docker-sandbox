@@ -80,6 +80,17 @@ export default function page() {
         },
       } as IPage2Params;
       breadUtils.addBreadcrumbLog(breadCrumbLog);
+    } else {
+      // パンくずの場合、前回入力値を復元する
+      const val = breadUtils.getBreadcrumbLog(URL_PATH);
+      if (val) {
+        const log = val.value as IPage2Params;
+        formProxy.reset({
+          val1: log.args.opeArgs.val1,
+          val2: log.args.opeArgs.val2,
+          val3: log.args.opeArgs.val3,
+        });
+      }
     }
 
     const logs = breadUtils.getBreadcrumbLogs();
@@ -138,7 +149,8 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page1`);
+              //router.push(`/bread-samples/page1`);
+              handleOnLeave(`/bread-samples/page1`);
             }}
           >
             to Page1
@@ -149,7 +161,8 @@ export default function page() {
             disabled={true}
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page2`);
+              //router.push(`/bread-samples/page2`);
+              handleOnLeave(`/bread-samples/page2`);
             }}
           >
             to Page2
@@ -159,7 +172,8 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page3`);
+              //router.push(`/bread-samples/page3`);
+              handleOnLeave(`/bread-samples/page3`);
             }}
           >
             to Page3
@@ -169,7 +183,8 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page4`);
+              //router.push(`/bread-samples/page4`);
+              handleOnLeave(`/bread-samples/page4`);
             }}
           >
             to Page4

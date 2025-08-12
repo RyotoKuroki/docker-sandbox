@@ -134,7 +134,8 @@ export default function page() {
             disabled={true}
             className={`${commonBtnStyle} `}
             onClick={() => {
-              router.push(`/bread-samples/page1`);
+              //router.push(`/bread-samples/page1`);
+              handleOnLeave(`/bread-samples/page1`);
             }}
           >
             to Page1
@@ -144,6 +145,7 @@ export default function page() {
           <button
             className={`${commonBtnStyle} `}
             onClick={() => {
+              //router.push(`/bread-samples/page2`);
               handleOnLeave(`/bread-samples/page2`);
             }}
           >
