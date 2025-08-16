@@ -74,9 +74,14 @@ const BreadcrumbCustom = forwardRef<HTMLDivElement, BreadProps>(
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="center">
                       {middleLogs.map((item) => (
-                        <DropdownMenuItem key={item.path} className="p-1 pt-2 border-1 border-disabled">
+                        <DropdownMenuItem key={item.path} className="p-1 pt-2 border-1 border-disabled rounded-md">
                           <BreadcrumbLink asChild>
-                            <Link href={`${item.path}?${item.queryParams ? item.queryParams : ""}`}>{item.label}</Link>
+                            <Link
+                              className="grid bg-blue-100 rounded-md p-3"
+                              href={`${item.path}?${item.queryParams ? item.queryParams : ""}`}
+                            >
+                              {item.label}
+                            </Link>
                           </BreadcrumbLink>
                         </DropdownMenuItem>
                       ))}
