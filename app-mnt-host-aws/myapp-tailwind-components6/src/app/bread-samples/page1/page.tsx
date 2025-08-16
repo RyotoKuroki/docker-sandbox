@@ -60,7 +60,7 @@ export default function page() {
     breadUtils.clearBreadcrumbLogs();
     const breadCrumbLog = {
       path: URL_PATH,
-      queryParams: "bread=true",
+      queryParams: "",
       label: BREAD_LABEL,
       args: {
         initArgs: {
@@ -84,7 +84,7 @@ export default function page() {
   const handleOnLeave = (url: string) => {
     const log = {
       label: BREAD_LABEL,
-      queryParams: "b=1",
+      queryParams: "",
       path: URL_PATH,
       args: {
         initArgs: {

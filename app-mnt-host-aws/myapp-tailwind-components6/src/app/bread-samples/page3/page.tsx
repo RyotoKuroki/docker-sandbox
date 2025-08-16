@@ -100,7 +100,7 @@ export default function page() {
   const handleOnLeave = (url: string) => {
     const log = {
       label: BREAD_LABEL,
-      queryParams: "",
+      queryParams: "bread=true",
       path: URL_PATH,
       args: {
         initArgs: {
