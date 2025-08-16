@@ -33,7 +33,7 @@ const formSchema = z.object({
 type formSchemaType = z.infer<typeof formSchema>;
 type formSchemaErrorType = z.inferFlattenedErrors<typeof formSchema>["fieldErrors"];
 
-const BREAD_LABEL = "ページ２";
+const BREAD_LABEL = "ページ２xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const URL_PATH = "/bread-samples/page2";
 
 export default function page() {
@@ -153,17 +153,17 @@ export default function page() {
             <div className="flex flex-row items-center">
               <label>in-param：</label>
               <input type="text" {...formProxy.register("val1")} className={commonInputStyle} />
-              {formData.val1}
+              {/* {formData.val1} */}
             </div>
             <div className="flex flex-row items-center">
               <label>param2：</label>
               <input type="number" {...formProxy.register("val2")} className={commonInputStyle} />
-              {formData.val2}
+              {/* {formData.val2} */}
             </div>
             <div className="flex flex-row items-center">
               <label>param3：</label>
               <input type="date" {...formProxy.register("val3")} className={commonInputStyle} />
-              {formData.val3?.toString()}
+              {/* {formData.val3?.toString()} */}
             </div>
           </div>
           <div className={`${commonGridContentStyle} bg-yellow-300`}>
