@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "env": {
+        "USER": "{USER_NAME}"
+      },
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/{USER_NAME}/Downloads",
+        "C:/Users/{USER_NAME}/Music",
+        "C:/_dev/mcp"
+      ]
+    },
+    "mcpPostgres01": {
+      "command": "npx",
+      "env": {
+        "USER": "{USER_NAME}"
+      },
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://user:password@host:5432/db"
+      ]
+    }
+  }
+}
