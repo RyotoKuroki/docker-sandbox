@@ -49,7 +49,7 @@ export default function page() {
   const formProxy = useForm<formSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: formData,
-    //mode: "onBlur", // フォーカスが外れたときにバリデーションを実行
+    mode: "onBlur", // フォーカスが外れたときにバリデーションを実行
   });
 
   const [links, setLinks] = useState<IBreadCrumbLog[]>([]);
@@ -59,14 +59,6 @@ export default function page() {
 
     const bParam = searchParams?.get("bread");
     if (!bParam) {
-      // const initData = {
-      //   val1: "bb",
-      //   val2: 234,
-      //   val3: new Date(),
-      // };
-      // formProxy.reset(initData); // 入力用データ
-      // setFormData(initData); // 表示用データ
-      // debugger;
       // パンくず以外の方法でアクセスされた場合のみ、パンくずにリンクを追加する
       const breadCrumbLog = {
         path: URL_PATH,
@@ -91,15 +83,6 @@ export default function page() {
           val2: log.args.opeArgs?.val2 ? Number(log.args.opeArgs?.val2) : undefined,
           val3: log.args.opeArgs?.val3 ? log.args.opeArgs?.val3 : undefined,
         } as formSchemaType;
-        debugger;
-        // const breadCrumbLog = {
-        //   path: URL_PATH,
-        //   queryParams: "bread=true",
-        //   label: BREAD_LABEL,
-        //   args: {
-        //     opeArgs: restoreData as formSchemaType,
-        //   },
-        // } as IPage2Params;
         breadUtils.addBreadcrumbLog(log);
 
         formProxy.reset(restoreData); // 入力用データ
@@ -109,9 +92,9 @@ export default function page() {
 
     const logs = breadUtils.getBreadcrumbLogs();
     setLinks(logs);
-  }, []);
+  }, [searchParams]);
 
-  const handleOnLeave = (/*url: string*/ formData: formSchemaType) => {
+  const handleOnLeave = (formData: formSchemaType) => {
     debugger;
     const log = {
       label: BREAD_LABEL,
@@ -131,7 +114,6 @@ export default function page() {
       },
     } as IPage2Params;
     breadUtils.addBreadcrumbLog(log);
-    //router.push(`/bread-samples/page2`);
     const url = `/bread-samples/page${handleType}`;
     router.push(url);
   };
