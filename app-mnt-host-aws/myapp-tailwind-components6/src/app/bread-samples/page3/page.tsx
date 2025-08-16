@@ -26,9 +26,9 @@ interface IPage3Params extends IBreadCrumbLog {
 }
 
 const formSchema = z.object({
-  val1: z.string(),
-  val2: z.coerce.number(),
-  val3: z.date(),
+  val1: z.string().optional(),
+  val2: z.coerce.number().optional(),
+  val3: z.coerce.date().optional(),
 });
 type formSchemaType = z.infer<typeof formSchema>;
 type formSchemaErrorType = z.inferFlattenedErrors<typeof formSchema>["fieldErrors"];

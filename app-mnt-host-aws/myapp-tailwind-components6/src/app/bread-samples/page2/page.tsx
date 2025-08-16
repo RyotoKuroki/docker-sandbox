@@ -15,12 +15,12 @@ interface IPage2Params extends IBreadCrumbLog {
     initArgs: {
       val1: string | undefined;
       val2: number | undefined;
-      val3: Date | undefined;
+      val3: string | undefined; //Date | undefined;
     };
     opeArgs: {
       val1: string | undefined;
       val2: number | undefined;
-      val3: Date | undefined;
+      val3: string | undefined; //Date | undefined;
     };
   };
 }
@@ -28,7 +28,7 @@ interface IPage2Params extends IBreadCrumbLog {
 const formSchema = z.object({
   val1: z.string().optional(),
   val2: z.coerce.number().optional(),
-  val3: z.coerce.date().optional(),
+  val3: z.string().optional(), //z.coerce.date().optional(),
 });
 type formSchemaType = z.infer<typeof formSchema>;
 type formSchemaErrorType = z.inferFlattenedErrors<typeof formSchema>["fieldErrors"];
@@ -59,14 +59,14 @@ export default function page() {
 
     const bParam = searchParams?.get("bread");
     if (!bParam) {
-      const initData = {
-        val1: "bb",
-        val2: 234,
-        val3: new Date(),
-      };
-      formProxy.reset(initData); // 入力用データ
-      setFormData(initData); // 表示用データ
-      debugger;
+      // const initData = {
+      //   val1: "bb",
+      //   val2: 234,
+      //   val3: new Date(),
+      // };
+      // formProxy.reset(initData); // 入力用データ
+      // setFormData(initData); // 表示用データ
+      // debugger;
       // パンくず以外の方法でアクセスされた場合のみ、パンくずにリンクを追加する
       const breadCrumbLog = {
         path: URL_PATH,
@@ -89,24 +89,19 @@ export default function page() {
         const restoreData = {
           val1: log.args.opeArgs?.val1,
           val2: log.args.opeArgs?.val2 ? Number(log.args.opeArgs?.val2) : undefined,
-          val3: log.args.opeArgs?.val3 ? new Date(log.args.opeArgs?.val3) : null,
+          val3: log.args.opeArgs?.val3 ? log.args.opeArgs?.val3 : undefined,
         } as formSchemaType;
         debugger;
-        const breadCrumbLog = {
-          path: URL_PATH,
-          queryParams: "bread=true",
-          label: BREAD_LABEL,
-          args: {
-            opeArgs: restoreData as formSchemaType,
-          },
-        } as IPage2Params;
-        breadUtils.addBreadcrumbLog(breadCrumbLog);
+        // const breadCrumbLog = {
+        //   path: URL_PATH,
+        //   queryParams: "bread=true",
+        //   label: BREAD_LABEL,
+        //   args: {
+        //     opeArgs: restoreData as formSchemaType,
+        //   },
+        // } as IPage2Params;
+        breadUtils.addBreadcrumbLog(log);
 
-        // const initData = {
-        //   val1: "bb",
-        //   val2: 234,
-        //   val3: new Date(),
-        // };
         formProxy.reset(restoreData); // 入力用データ
         setFormData(restoreData); // 表示用データ
       }
@@ -131,7 +126,7 @@ export default function page() {
         opeArgs: {
           val1: formData?.val1 ? formData.val1 : undefined,
           val2: formData?.val2 ? Number(formData.val2) : undefined,
-          val3: formData?.val3 ? new Date(formData.val3) : undefined,
+          val3: formData?.val3 ? formData.val3 : undefined,
         },
       },
     } as IPage2Params;
