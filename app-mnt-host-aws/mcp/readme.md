@@ -5,6 +5,6 @@
 　４．Claudeチャットで指示
 </div>
 <div>
-    filder : C:\Users\{USER_NAME}\AppData\Roaming\Claude
+    C:\Users\{USER_NAME}\AppData\Roaming\Claude
     　┗ claude_desktop_config.json
 </div>
