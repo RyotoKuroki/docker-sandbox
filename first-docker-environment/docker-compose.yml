@@ -1,0 +1,94 @@
+version: '3.9'
+services:
+  # アプリケーションコンテナ
+  app:
+    container_name: rough-post-app
+    build: . # Dockerfileが置かれているディレクトリを指定します
+    ports:
+      - "3006:3000" # アプリケーションのポートを公開します
+    volumes:
+      #- ./myapp:/app # ソースコードをマウントします (開発用)
+      #- ./myapp-tailwind:/app # ソースコードをマウントします (開発用)
+      - .:/app # ソースコードをマウントします (開発用)
+      - /app/node_modules # node_modulesを除外
+    depends_on:
+      - db # PostgreSQLコンテナが起動後に起動します
+      - localstack
+      - maildev # MailDevコンテナが起動後に起動します
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME} # PostgreSQL接続URL
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_REGION=us-east-1
+      - SMTP_HOST=maildev #maildev
+      - SMTP_PORT=1026    #maildev
+    #command: npm run dev
+    command: sh -c "npm install; npm run dev"
+    develop: # watch設定をここに追加
+      watch:
+        - action: sync # ソースコードの変更をコンテナに同期する
+          path: ./rough-post # ウォッチするホスト側のパス
+          target: /app # コンテナ側の同期先パス
+          ignore: # 除外するパス (任意)
+            - node_modules/
+            - .git/
+        - action: rebuild # Dockerfileや依存ファイルが変更されたらリビルド
+          path: ./package.json # ウォッチするホスト側のパス (例: package.json)
+          target: /app/package.json # コンテナ側のパス (ビルドコンテキスト内のパス)
+    restart: always
+  # PostgreSQLコンテナ
+  db:
+    image: postgres:17.5-alpine # PostgreSQL 14のAlpineイメージを使用します
+    container_name: rough-post-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # データを永続化するためのボリューム
+    environment:
+      POSTGRES_USER: ${DB_USER} # ユーザー名
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # パスワード
+      POSTGRES_DB: ${DB_NAME} # データベース名
+    ports:
+      - "5436:5432" # PostgreSQLのポートを公開します（外からアクセスする際は 5438に変換して公開）
+    restart: always
+
+  # LocalStackの定義
+  localstack:
+    image: localstack/localstack:latest
+    container_name: rough-post-localstack # コンテナ名を指定
+    environment:
+      #- SERVICES=s3,dynamodb,sqs,sns,Lambda  # 使用するAWSサービスを定義
+      - SERVICES=s3,Lambda  # 使用するAWSサービスを定義
+      - HOSTNAME_EXTERNAL=localhost
+      - DOCKER_HOST=unix:///var/run/docker.sock # Docker ホスト
+      - DEBUG=1
+      #- EDGE_PORT=4566  # LocalStackのエッジポート
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      #- INIT_SCRIPTS=./docker-entrypoint-init.d/init.sh # 初期化スクリプトのパス
+    ports:
+      #- "4566:4566"  # LocalStackのエッジポートを公開
+      #- "8080:8080" #LocalStack Web UI
+      - "4576:4566"            # ポートフォワーディング
+      #- "4571:4571"            # (オプション)
+    volumes:
+      #- "./localstack:/tmp/localstack"  # LocalStackの設定やデータをマウント
+      - "./localstack:/var/lib/localstack"
+      #- "${PWD}/.data:/tmp/data"            # 永続化 (オプション)
+      #- "${PWD}/docker-entrypoint-init.d:/docker-entrypoint-init.d" # 初期化スクリプトのマウント
+    restart: always
+
+  # maildev の環境をここに作成
+  maildev:
+    image: maildev/maildev:latest # MailDevの公式イメージを使用
+    container_name: rough-post-maildev # コンテナ名を指定
+    ports:
+      - "1086:1080"   # MailDevのWeb UI (ブラウザでアクセス)
+      - "1026:1025"   # SMTPサーバー (アプリケーションからメール送信)
+    restart: always
+    # depends_on: # MailDevは他のサービスに依存しないことが多いので、必須ではない
+    #   - app
+
+# ボリューム定義
+volumes:
+  postgres_data:
