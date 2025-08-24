@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as colorConsole from "@/lib/debug/colorConsole";
 
 /**
  * @swagger
@@ -42,13 +43,17 @@ import { NextRequest, NextResponse } from "next/server";
  */
 // POSTリクエストを処理する関数
 export async function POST(request: NextRequest) {
+  colorConsole.consoleDebug("RED", `【api】fetch-test called.`);
   try {
     const apiKey = request.headers.get("X-API-KEY");
+
     console.log(`apikey[client]`, apiKey);
     console.log(`apikey[server]`, process.env.YOUR_API_KEY);
     if (apiKey !== process.env.YOUR_API_KEY) {
       return NextResponse.json({ error: "BAD API KEY." }, { status: 401 });
     }
+
+    colorConsole.consoleDebug("GREEN", `【api】fetch-test api-key OK.`);
 
     // リクエストボディをJSONとしてパースする
     // bodyParser.json() といったミドルウェアは不要です
