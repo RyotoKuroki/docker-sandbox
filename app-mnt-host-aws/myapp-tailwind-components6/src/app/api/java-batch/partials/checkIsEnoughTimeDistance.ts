@@ -1,7 +1,13 @@
 "use server";
 
 import { statSync } from "fs";
-import { STDOUT_COLORS } from "../route";
+
+const STDOUT_COLORS = {
+  RESET: "\x1b[0m",
+  RED: "\x1b[31m",
+  GREEN: "\x1b[32m",
+  YELLOW: "\x1b[33m",
+};
 
 export const checkIsEnoughTimeDistance = async (
   pidFilePath: string,

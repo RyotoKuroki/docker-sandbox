@@ -24,11 +24,11 @@ const BATCH_DIR = "/usr/bin/javaProcess";
 const BATCH_COMMAND = "startBatch.class";
 const javaOptions = [`-Xms1024m`, `-Xmx1024m`];
 const javaArgs = [NOTIFY_JAVABATCH_RAN_SAFETY];
-export const COOLDOWN_SECONDS = 10;
+const COOLDOWN_SECONDS = 10;
 // ---
 
 // ANSIエスケープシーケンスの定義
-export const STDOUT_COLORS = {
+const STDOUT_COLORS = {
   RESET: "\x1b[0m",
   RED: "\x1b[31m",
   GREEN: "\x1b[32m",
