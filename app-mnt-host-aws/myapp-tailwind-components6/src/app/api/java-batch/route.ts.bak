@@ -1,0 +1,123 @@
+import { NextRequest, NextResponse } from "next/server";
+import { readFileSync, statSync, utimesSync, writeFileSync } from "fs";
+import { spawn } from "child_process";
+import path from "path";
+
+// --- 設定 ---
+const PID_FILE_PATH = "/var/tmp/pid.log";
+const BATCH_DIR = "/usr/bin/javaProcess";
+const BATCH_COMMAND = "startBatch.class";
+const COOLDOWN_SECONDS = 10;
+// ---
+
+// ANSIエスケープシーケンスの定義
+const COLORS = {
+  RESET: "\x1b[0m",
+  RED: "\x1b[31m",
+  GREEN: "\x1b[32m",
+  YELLOW: "\x1b[33m",
+};
+
+// ヘルパー関数：指定したPIDのプロセスが実行中か確認
+const isProcessRunning = (pid: number): boolean => {
+  try {
+    // kill(0)はシグナルを送信せず、プロセスが存在するか確認する
+    process.kill(pid, 0);
+    return true;
+  } catch (error: any) {
+    // エラーコードが 'ESRCH'（プロセスが存在しない）でなければ、何らかのエラー
+    return error.code === "EPERM";
+  }
+};
+
+/**
+ * バッチ処理をトリガーするAPIルート
+ * @returns 処理結果のJSONレスポンス
+ */
+export async function POST(request: NextRequest) {
+  try {
+    // ① POSTリクエストが来たら処理を開始する
+    console.log(`${COLORS.YELLOW}--- API called at ${new Date().toISOString()} ---${COLORS.RESET}`);
+
+    // --- 存在チェックと最終更新日時チェック ---
+    try {
+      const stats = statSync(PID_FILE_PATH);
+      const lastModifiedTime = stats.mtime.getTime();
+      const currentTime = Date.now();
+      const timeElapsed = (currentTime - lastModifiedTime) / 1000;
+
+      // ② 最終更新日時から10秒以上経過していない場合、429エラー
+      if (timeElapsed < COOLDOWN_SECONDS) {
+        console.warn(`${COLORS.RED}API is on cooldown. Time elapsed: ${timeElapsed.toFixed(2)}s${COLORS.RESET}`);
+        return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
+      }
+
+      // ③ PIDファイルからPIDを読み込み、プロセスが実行中か確認
+      const pid = parseInt(readFileSync(PID_FILE_PATH, "utf-8"), 10);
+      if (!isNaN(pid) && isProcessRunning(pid)) {
+        console.warn(`${COLORS.RED}Batch process (PID: ${pid}) is already running.${COLORS.RESET}`);
+        return NextResponse.json({ error: "Batch process is already running." }, { status: 429 });
+      }
+
+      // ④ 10秒以上経過している場合、PIDファイルの最終更新日時を更新
+      utimesSync(PID_FILE_PATH, new Date(), new Date());
+    } catch (error: any) {
+      // PIDファイルが存在しない場合、警告ログを出力して処理を続行
+      if (error.code === "ENOENT") {
+        console.warn(`${COLORS.YELLOW}PID file not found. Creating a new one.${COLORS.RESET}`);
+      } else {
+        console.error(`${COLORS.RED}Error accessing PID file:${COLORS.RESET}`, error);
+      }
+    }
+
+    // ⑤ Javaプログラムを実行
+    const javaProcess = spawn("java", ["-classpath", BATCH_DIR, BATCH_COMMAND]);
+    const processId = javaProcess.pid;
+    console.log(`Spawned Java process with PID: ${processId}`);
+
+    // ⑥ 取得したPIDをファイルに書き込む
+    writeFileSync(PID_FILE_PATH, processId.toString(), "utf-8");
+
+    // ⑦ 実行したstartBatchの標準出力を監視
+    const batchResult = await new Promise<string>((resolve, reject) => {
+      let output = "";
+
+      // 標準出力からのデータをリッスン
+      javaProcess.stdout.on("data", (data) => {
+        output += data.toString();
+        if (output.includes("NOTIFY_JAVABATCH_RAN_SAFETY")) {
+          console.log(`${COLORS.GREEN}SUCCESS: Found magic string in Java output.${COLORS.RESET}`);
+          resolve("success");
+        }
+      });
+
+      // エラー出力をリッスン
+      javaProcess.stderr.on("data", (data) => {
+        console.error(`${COLORS.RED}Java Process Error:${COLORS.RESET}`, data.toString());
+      });
+
+      // プロセス終了を監視
+      javaProcess.on("close", (code) => {
+        if (code !== 0) {
+          reject(`Java process exited with code: ${code}`);
+        } else if (!output.includes("NOTIFY_JAVABATCH_RAN_SAFETY")) {
+          reject("Magic string not found in Java process output.");
+        }
+      });
+
+      // プロセスがエラーで終了した場合
+      javaProcess.on("error", (err) => {
+        reject(`Failed to start Java process: ${err.message}`);
+      });
+    });
+
+    if (batchResult === "success") {
+      return NextResponse.json({ message: "Batch process executed successfully." });
+    } else {
+      return NextResponse.json({ error: "Batch process did not return success message." }, { status: 500 });
+    }
+  } catch (error: any) {
+    console.error(`${COLORS.RED}API handler error:${COLORS.RESET}`, error);
+    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
+  }
+}
