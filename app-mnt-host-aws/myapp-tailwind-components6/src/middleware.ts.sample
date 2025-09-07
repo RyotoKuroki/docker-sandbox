@@ -1,0 +1,36 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+// このミドルウェア関数は、全てのリクエストに対して実行されます
+export function middleware(request: NextRequest) {
+  console.log(`Middleware called.`);
+
+  // ユーザーが認証済みかどうかを判断するシンプルなロジック
+  // ここでは、クッキーに認証トークンがあるかどうかをチェックします。
+  const isAuthenticated = request.cookies.get("auth_token");
+
+  // リクエストされたパスを取得
+  const pathname = request.nextUrl.pathname;
+
+  // もしパスが /dashboard で始まり、かつ認証されていない場合は...
+  if (pathname.startsWith("/dashboard") && !isAuthenticated) {
+    // ユーザーをログインページにリダイレクトします
+    // NextResponse.redirect() を使用して、リダイレクト先のURLを指定します。
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // それ以外の場合は、リクエストを続行させます
+  // 何も返さないか、NextResponse.next() を明示的に返します
+  return NextResponse.next();
+}
+
+// この設定は、ミドルウェアを実行するパスをフィルタリングします
+// matcherを使用することで、全てのファイルに対して実行されるのを防ぎ、パフォーマンスを最適化します。
+export const config = {
+  matcher: [
+    "/dashboard/:path*", // /dashboard とその配下の全てのパスにマッチ
+    "/bread-samples/:path*",
+    "/api",
+    "/api-call-sample",
+  ],
+};
