@@ -98,8 +98,22 @@ export default function HomePage() {
     name: uiItemNames.emailList, // 'subs',
   });
 
-  /** submit処理 */
+  /**
+   * 非推奨sample
+   * @deprecated
+   */
+  const hogeDontUseFunc = () => {
+    console.log("xxxxx");
+  };
+
+  /**
+   * submit処理
+   * @deprecated 非推奨ですyo
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // 非推奨ですyo
+    hogeDontUseFunc();
+
     // ページリロードをキャンセル
     e.preventDefault();
 
