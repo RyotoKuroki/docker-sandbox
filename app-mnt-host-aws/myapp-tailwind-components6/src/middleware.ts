@@ -1,5 +1,5 @@
-import { NextResponse, NextRequest } from "next/server";
-//import type { NextRequest } from "next/server";
+//import { NextResponse, NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { consoleDebug } from "./lib/debug/colorConsole";
 
 const useCookieSample = false;
@@ -66,12 +66,14 @@ export function middleware(request: NextRequest) {
 // この設定は、ミドルウェアを実行するパスをフィルタリングします
 // matcherを使用することで、全てのファイルに対して実行されるのを防ぎ、パフォーマンスを最適化します。
 export const config = {
-  matcher: [
-    //"/middleware-samples/:path*",
-    "/middleware-samples/sample1",
-    //"/dashboard/:path*", // /dashboard とその配下の全てのパスにマッチ
-    //"/bread-samples/:path*",
-    //"/api",
-    //"/api-call-sample",
-  ],
+  // matcher: [
+  //   //"/middleware-samples/:path*",
+  //   "*",
+  //   //"/dashboard/:path*", // /dashboard とその配下の全てのパスにマッチ
+  //   //"/bread-samples/:path*",
+  //   //"/api",
+  //   //"/api-call-sample",
+  // ],
+  //matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/"],
 };
