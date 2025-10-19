@@ -167,7 +167,7 @@ export default function HomePage() {
     // 既存のエラーをクリア
     form.clearErrors();
 
-    issues.forEach((issue) => {
+    issues.forEach((issue, index) => {
       // ZodIssueのpathを文字列に変換（例: ['user', 'name'] -> 'user.name'）
       const path = issue.path.join(".") as keyof T;
 
@@ -178,7 +178,7 @@ export default function HomePage() {
           type: "manual", // 外部からの手動設定であることを示す
           message: issue.message,
         },
-        { shouldFocus: true },
+        { shouldFocus: index == 0 /*１つめのエラー項目にフォーカス*/ },
       );
     });
   };
@@ -214,6 +214,10 @@ export default function HomePage() {
               }`}
               {...searchCondition1Proxy.register("field2")}
             />
+            <span className="pl-1 text-red-700">*</span>
+            <span className="pl-1 text-red-700">
+              {searchCondition1Proxy.formState?.errors?.field2?.message}
+            </span>
           </div>
           <div className="flex flex-row">
             <button
@@ -248,6 +252,10 @@ export default function HomePage() {
               }`}
               {...searchCondition2Proxy.register("field2")}
             />
+            <span className="pl-1 text-red-700">*</span>
+            <span className="pl-1 text-red-700">
+              {searchCondition2Proxy.formState?.errors?.field2?.message}
+            </span>
           </div>
           <div className="flex flex-row">
             <button
