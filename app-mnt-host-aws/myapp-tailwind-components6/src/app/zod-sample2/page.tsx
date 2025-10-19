@@ -190,84 +190,105 @@ export default function HomePage() {
       <div className="bg-red-200 p-2"></div>
       <div className="bg-green-200 p-2">
         <div
-          className="grid grid-cols-[1fr_1fr_1fr] space-y-3"
+          className="space-y-3"
           //onSubmit={formProxy.handleSubmit(handleSearch)}
         >
-          <div>
-            <label>field1</label>
-            <input
-              className={`${inputStyle} ${
-                searchCondition1Proxy.formState?.errors?.field1?.message && "border-red-700"
-              }`}
-              {...searchCondition1Proxy.register("field1")}
-            />
-            <span className="pl-1 text-red-700">*</span>
-            <span className="pl-1 text-red-700">
-              {searchCondition1Proxy.formState?.errors?.field1?.message}
-            </span>
+          <div
+            className="grid grid-cols-[1fr_1fr_1fr] "
+            onKeyUp={(ev: any) => {
+              if (!confirm("検索条件１の入力値をチェックする？")) {
+                return;
+              }
+              _validSearchCondition1();
+            }}
+          >
+            <div>
+              <label>field1</label>
+              <input
+                className={`${inputStyle} ${
+                  searchCondition1Proxy.formState?.errors?.field1?.message && "border-red-700"
+                }`}
+                {...searchCondition1Proxy.register("field1")}
+              />
+              <span className="pl-1 text-red-700">*</span>
+              <span className="pl-1 text-red-700">
+                {searchCondition1Proxy.formState?.errors?.field1?.message}
+              </span>
+            </div>
+            <div>
+              <label>field2</label>
+              <input
+                className={`${inputStyle} ${
+                  searchCondition1Proxy.formState?.errors?.field2?.message && "border-red-700"
+                }`}
+                {...searchCondition1Proxy.register("field2")}
+              />
+              <span className="pl-1 text-red-700">*</span>
+              <span className="pl-1 text-red-700">
+                {searchCondition1Proxy.formState?.errors?.field2?.message}
+              </span>
+            </div>
+            <div className="flex flex-row">
+              <button
+                //type="submit"
+                name="btn1"
+                id="btn1"
+                formTarget="btn1"
+                onClick={_validSearchCondition1}
+                className={`${buttonStyle} w-[230px]`}
+              >
+                search
+              </button>
+            </div>
           </div>
-          <div>
-            <label>field2</label>
-            <input
-              className={`${inputStyle} ${
-                searchCondition1Proxy.formState?.errors?.field2?.message && "border-red-700"
-              }`}
-              {...searchCondition1Proxy.register("field2")}
-            />
-            <span className="pl-1 text-red-700">*</span>
-            <span className="pl-1 text-red-700">
-              {searchCondition1Proxy.formState?.errors?.field2?.message}
-            </span>
-          </div>
-          <div className="flex flex-row">
-            <button
-              //type="submit"
-              name="btn1"
-              id="btn1"
-              formTarget="btn1"
-              onClick={_validSearchCondition1}
-              className={`${buttonStyle} w-[230px]`}
-            >
-              search
-            </button>
-          </div>
-          <div>
-            <label>field1</label>
-            <input
-              className={`${inputStyle} ${
-                searchCondition2Proxy.formState?.errors?.field1?.message && "border-red-700"
-              }`}
-              {...searchCondition2Proxy.register("field1")}
-            />
-            <span className="pl-1 text-red-700">*</span>
-            <span className="pl-1 text-red-700">
-              {searchCondition2Proxy.formState?.errors?.field1?.message}
-            </span>
-          </div>
-          <div>
-            <label>field2</label>
-            <input
-              className={`${inputStyle} ${
-                searchCondition2Proxy.formState?.errors?.field2?.message && "border-red-700"
-              }`}
-              {...searchCondition2Proxy.register("field2")}
-            />
-            <span className="pl-1 text-red-700">*</span>
-            <span className="pl-1 text-red-700">
-              {searchCondition2Proxy.formState?.errors?.field2?.message}
-            </span>
-          </div>
-          <div className="flex flex-row">
-            <button
-              //type="submit"
-              id="btn2"
-              name="btn22"
-              formTarget="btn2"
-              onClick={_validSearchCondition2}
-              className={`${buttonStyle} w-[230px]`}
-            >
-              search
-            </button>
+
+          <div
+            className="grid grid-cols-[1fr_1fr_1fr] "
+            onKeyUp={(ev: any) => {
+              if (!confirm("検索条件の２入力値をチェックする？")) {
+                return;
+              }
+              _validSearchCondition2();
+            }}
+          >
+            <div>
+              <label>field1</label>
+              <input
+                className={`${inputStyle} ${
+                  searchCondition2Proxy.formState?.errors?.field1?.message && "border-red-700"
+                }`}
+                {...searchCondition2Proxy.register("field1")}
+              />
+              <span className="pl-1 text-red-700">*</span>
+              <span className="pl-1 text-red-700">
+                {searchCondition2Proxy.formState?.errors?.field1?.message}
+              </span>
+            </div>
+            <div>
+              <label>field2</label>
+              <input
+                className={`${inputStyle} ${
+                  searchCondition2Proxy.formState?.errors?.field2?.message && "border-red-700"
+                }`}
+                {...searchCondition2Proxy.register("field2")}
+              />
+              <span className="pl-1 text-red-700">*</span>
+              <span className="pl-1 text-red-700">
+                {searchCondition2Proxy.formState?.errors?.field2?.message}
+              </span>
+            </div>
+            <div className="flex flex-row">
+              <button
+                //type="submit"
+                id="btn2"
+                name="btn22"
+                formTarget="btn2"
+                onClick={_validSearchCondition2}
+                className={`${buttonStyle} w-[230px]`}
+              >
+                search
+              </button>
+            </div>
           </div>
         </div>
       </div>
