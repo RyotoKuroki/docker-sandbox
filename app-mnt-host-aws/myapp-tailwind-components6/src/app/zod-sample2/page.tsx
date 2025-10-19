@@ -18,64 +18,12 @@ import {
 } from "./difinitions/searchConditionSchema";
 import { listViewRowType, listViewSchema, listViewType } from "./difinitions/listViewSchema";
 import { formSchema, formType, formTypeError } from "./difinitions/formSchema";
-// import { uiItemNames, cautionName } from "./schemas";
-// import { Toaster, toast } from "sonner";
-// import { useSearchParams } from "next/navigation";
-// import MyModal from "./dialog-sample";
-// import CompletedArea from "./completed-area";
-// //import Loading from "@/app/loading";
-// import {
-//   inDtoSaveSomeSchema,
-//   inDtoSaveSomeType,
-//   inDtoSaveSomeErrorType,
-//   ValidatiionSideEnum,
-// } from "./server-actions/save-somedata/action-save-somedata-schema";
-// import { sendMail } from "./server-actions/action-sample";
-// //import { ResultServ, validateOnServer } from './server-actions/action-validation';
-// import Link from "next/link";
-// import { inDtoType } from "./server-actions/initialize/action-initialize-schema";
-// import { initializeAction } from "./server-actions/initialize/action-initialize";
-// import { ApiResultCommon } from "@/lib/api/ApiResultCommon";
-// import { compareAsc, format } from "date-fns";
-// import { saveSomedataAction } from "./server-actions/save-somedata/action-save-somedata";
-// import { ChevronDownIcon, SlashIcon } from "lucide-react";
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from "@/components/ui/breadcrumb";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import ListSample from "./_components/list-sample";
 
 /**
  *
  * @returns
  */
 export default function HomePage() {
-  // const searchParams = useSearchParams();
-
-  // const [errors, setErrors] = useState<inDtoSaveSomeErrorType>({});
-  // const [submittedData, setSubmittedData] = useState<inDtoSaveSomeType | null>(null);
-  // const [isPending, setIsPending] = useState(false);
-  // const [isMyModalOpened, setIsMyModalOpened] = useState(false);
-
-  // const formProxy = useForm({
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues: {
-  //     searchCondition1: {} as searchConditionType,
-  //     searchCondition2: {} as searchConditionType,
-  //     rows: [] as listViewRowType[],
-  //   },
-  // });
-
   const searchCondition1Proxy = useForm({
     resolver: zodResolver(searchConditionSchema),
     defaultValues: {
@@ -92,43 +40,21 @@ export default function HomePage() {
     } as searchConditionType,
   });
 
+  const listViewProxy = useForm({
+    resolver: zodResolver(listViewSchema),
+    defaultValues: {
+      rows: [
+        { field1: "1", field2: "あああああ" },
+        { field1: "2", field2: "いいいいい" },
+        { field1: "3", field2: "ううううう" },
+        { field1: "4", field2: "えええええ" },
+        { field1: "5", field2: "おおおおお" },
+      ] as listViewRowType[],
+    } as listViewType,
+  });
+
   // 初期化処理
   useEffect(() => {}, []);
-
-  // const handleSearch = (args: any) => {
-  //   //debugger;
-  //   console.log("hogehogjeojfo", args);
-
-  //   formProxy.clearErrors();
-
-  //   const senderId = args.currentTarget.id;
-  //   const values = formProxy.getValues();
-  //   let condition: searchConditionType;
-  //   switch (senderId) {
-  //     case "btn1":
-  //       condition = values.searchCondition1;
-  //       // formProxy.handleSubmit(() => {
-  //       //   _validSearchCondition1();
-  //       // });
-  //       break;
-  //     case "btn2":
-  //       condition = values.searchCondition2;
-  //       // formProxy.handleSubmit(() => {
-  //       //   _validSearchCondition2();
-  //       // });
-  //       break;
-  //     default:
-  //       throw new Error("searchLayer not found.");
-  //   }
-  //   const valid = searchConditionSchema.safeParse(condition);
-  //   if (!valid.success) {
-  //     debugger;
-  //     const err1 = valid.error.formErrors.fieldErrors;
-  //     const err2 = valid.error.format();
-  //     formProxy.setError();
-  //     return;
-  //   }
-  // };
 
   const _validSearchCondition1 = () => {
     searchCondition1Proxy.clearErrors();
@@ -181,6 +107,16 @@ export default function HomePage() {
         { shouldFocus: index == 0 /*１つめのエラー項目にフォーカス*/ },
       );
     });
+  };
+
+  const onClickedRowSubmit = () => {
+    const args = listViewProxy.getValues();
+    const valid = listViewSchema.safeParse(args);
+    if (!valid.success) {
+      // ZodError.issues を抽出し、ユーティリティ関数に渡す
+      _setFormErrors(valid.error.issues, listViewProxy);
+      return;
+    }
   };
 
   const buttonStyle = `border border-gray-500 rounded-lg px-3 bg-blue-200 hover:bg-blue-500 h-[51px]`;
@@ -293,7 +229,45 @@ export default function HomePage() {
         </div>
       </div>
       <div className="bg-blue-200 p-2"></div>
-      <div className="bg-yellow-200 p-2">bbbbbbbb</div>
+      <div className="bg-yellow-200 p-2">
+        <label className="w-[150px]">[index]</label> <label className="w-[150px]">[value]</label>
+        {listViewProxy.getValues().rows.map((row, index) => (
+          <>
+            <hr className="border border-blue-300 my-2" />
+            <div key={index} className="space-x-3 flex flex-row">
+              <div className="w-[120px]">
+                {" "}
+                <input
+                  {...listViewProxy.register(`rows.${index}.field1`)}
+                  className="border border-gray-500 rounded-sm p-1 w-[50px]"
+                />
+                {listViewProxy?.formState?.errors?.rows &&
+                  listViewProxy.formState.errors.rows[index]?.field1?.message && (
+                    <span className="text-red-700 pl-1">
+                      {listViewProxy.formState.errors.rows[index]?.field1?.message}
+                    </span>
+                  )}
+              </div>{" "}
+              <div className="w-[190px]">
+                <input
+                  {...listViewProxy.register(`rows.${index}.field2`)}
+                  className="border border-gray-500 rounded-sm p-1 w-[100px]"
+                />
+                {listViewProxy?.formState?.errors?.rows &&
+                  listViewProxy.formState.errors.rows[index]?.field2?.message && (
+                    <span className="text-red-700 pl-1">
+                      {listViewProxy.formState.errors.rows[index]?.field2?.message}
+                    </span>
+                  )}
+              </div>
+            </div>
+          </>
+        ))}
+        <hr className="border border-blue-300 my-2" />
+        <button onClick={onClickedRowSubmit} className={`${buttonStyle} mt-0`}>
+          Check
+        </button>
+      </div>
     </div>
   );
 }
