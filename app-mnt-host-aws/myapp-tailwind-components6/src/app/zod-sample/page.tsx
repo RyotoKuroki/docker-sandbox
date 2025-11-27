@@ -1,31 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useState /*, Suspense*/ } from "react";
+import { useEffect, useState /*, Suspense*/ } from "react";
 //import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; // これに変更
-import { z } from "zod";
-import { uiItemNames, cautionName } from "./schemas";
-import { Toaster, toast } from "sonner";
 import { useSearchParams } from "next/navigation";
-import MyModal from "./dialog-sample";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast, Toaster } from "sonner";
 import CompletedArea from "./completed-area";
+import MyModal from "./dialog-sample";
+import { cautionName, uiItemNames } from "./schemas";
 //import Loading from "@/app/loading";
+import { sendMail } from "./server-actions/action-sample";
 import {
+  inDtoSaveSomeErrorType,
   inDtoSaveSomeSchema,
   inDtoSaveSomeType,
-  inDtoSaveSomeErrorType,
   ValidatiionSideEnum,
 } from "./server-actions/save-somedata/action-save-somedata-schema";
-import { sendMail } from "./server-actions/action-sample";
 //import { ResultServ, validateOnServer } from './server-actions/action-validation';
-import Link from "next/link";
-import { inDtoType } from "./server-actions/initialize/action-initialize-schema";
-import { initializeAction } from "./server-actions/initialize/action-initialize";
-import { ApiResultCommon } from "@/lib/api/ApiResultCommon";
-import { compareAsc, format } from "date-fns";
-import { saveSomedataAction } from "./server-actions/save-somedata/action-save-somedata";
-import { ChevronDownIcon, SlashIcon } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -40,6 +32,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ApiResultCommon } from "@/lib/api/ApiResultCommon";
+import { ChevronDownIcon, SlashIcon } from "lucide-react";
+import Link from "next/link";
+import ChildSample from "./_components/child-sample";
+import { initializeAction } from "./server-actions/initialize/action-initialize";
+import { inDtoType } from "./server-actions/initialize/action-initialize-schema";
+import {
+  sampleValidateSchema,
+  sampleValidateType,
+} from "./server-actions/initialize/action-sample-validate-schema";
+import { saveSomedataAction } from "./server-actions/save-somedata/action-save-somedata";
 
 /**
  *
@@ -98,6 +101,26 @@ export default function HomePage() {
     name: uiItemNames.emailList, // 'subs',
   });
 
+  const {
+    control: v_control,
+    formState: { errors: v_errors },
+    register: v_register,
+    getValues: v_getValues,
+    reset: v_reset,
+    clearErrors: v_clearErrors,
+    handleSubmit: v_handleSubmit,
+  } = useForm<sampleValidateType>({
+    resolver: zodResolver(sampleValidateSchema),
+    defaultValues: {
+      value1: "",
+      value2: null,
+    },
+    mode: "onSubmit", // フォーカスが外れたときにバリデーションを実行
+  });
+  const v_handleSubmitFunc = () => {
+    toast.info(`サンプルバリデート：正常！！`);
+  };
+
   /**
    * 非推奨sample
    * @deprecated
@@ -133,7 +156,8 @@ export default function HomePage() {
         const resultValidClient = inDtoSaveSomeSchema.safeParse(formData);
         if (!resultValidClient.success) {
           // バリデーションエラーがある場合
-          const fieldErrors = resultValidClient.error.flatten().fieldErrors as inDtoSaveSomeErrorType;
+          const fieldErrors = resultValidClient.error.flatten()
+            .fieldErrors as inDtoSaveSomeErrorType;
           setErrors(fieldErrors);
           setIsPending(false);
 
@@ -255,7 +279,10 @@ export default function HomePage() {
               id={proxyForm.register(uiItemNames.name).name}
             />
             {errors.name && (
-              <p id={`${uiItemNames.name}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
+              <p
+                id={`${uiItemNames.name}-${uiItemNames.error}`}
+                className="mt-1 text-xs text-red-500"
+              >
                 {errors.name[0]}
               </p>
             )}
@@ -278,7 +305,10 @@ export default function HomePage() {
               id={proxyForm.register(uiItemNames.email).name}
             />
             {errors.email && (
-              <p id={`${uiItemNames.email}-${uiItemNames.error}`} className="mt-1 text-xs text-red-500">
+              <p
+                id={`${uiItemNames.email}-${uiItemNames.error}`}
+                className="mt-1 text-xs text-red-500"
+              >
                 {errors.email.join(", ")}
               </p>
             )}
@@ -304,10 +334,14 @@ export default function HomePage() {
                   <input
                     type="number"
                     className={`mt-1 block w-full px-3 py-2 border ${
-                      proxyForm.formState.errors.subs?.[index]?.priority ? "border-red-500" : "border-gray-300"
+                      proxyForm.formState.errors.subs?.[index]?.priority
+                        ? "border-red-500"
+                        : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     aria-describedby={`${uiItemNames.emailList}-${index}-${uiItemNames.priority}-${uiItemNames.error}`}
-                    {...proxyForm.register(`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`)}
+                    {...proxyForm.register(
+                      `${uiItemNames.emailList}.${index}.${uiItemNames.priority}`,
+                    )}
                     id={`${uiItemNames.emailList}.${index}.${uiItemNames.priority}`}
                     placeholder="優先度"
                   />
@@ -324,10 +358,14 @@ export default function HomePage() {
                   <input
                     type="email"
                     className={`mt-1 block w-full px-3 py-2 border ${
-                      proxyForm.formState.errors.subs?.[index]?.subEmail ? "border-red-500" : "border-gray-300"
+                      proxyForm.formState.errors.subs?.[index]?.subEmail
+                        ? "border-red-500"
+                        : "border-gray-300"
                     } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     aria-describedby={`${uiItemNames.emailList}-${index}-${uiItemNames.subEmail}-${uiItemNames.error}`}
-                    {...proxyForm.register(`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`)}
+                    {...proxyForm.register(
+                      `${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`,
+                    )}
                     id={`${uiItemNames.emailList}.${index}.${uiItemNames.subEmail}`}
                     placeholder="sub-email"
                   />
@@ -357,7 +395,11 @@ export default function HomePage() {
                 Client
               </label>
               <label>
-                <input type="radio" value={ValidatiionSideEnum.SERVER} {...proxyForm.register(uiItemNames.validSide)} />{" "}
+                <input
+                  type="radio"
+                  value={ValidatiionSideEnum.SERVER}
+                  {...proxyForm.register(uiItemNames.validSide)}
+                />{" "}
                 Server
               </label>
             </div>
@@ -378,6 +420,44 @@ export default function HomePage() {
               <u>maildev</u>
             </Link>
           </div>
+        </form>
+
+        <form
+          onSubmit={v_handleSubmit(v_handleSubmitFunc)}
+          className="mt-9 shadow border border-gray-300 p-3 rounded-lg"
+        >
+          <h3>最シンプル Form-validation サンプル</h3>
+          <div className="mt-3">
+            値１：
+            <input
+              type="text"
+              {...v_register("value1")}
+              className={`mt-1 block w-full px-3 py-2 border ${
+                v_errors?.value1?.message ? "border-red-500" : "border-gray-300"
+              } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+            <label className="text-red-700">{v_errors?.value1?.message}</label>
+          </div>
+          <div className="mt-3">
+            値２：
+            <input
+              type="number"
+              {...v_register("value2")}
+              className={`mt-1 block w-full px-3 py-2 border ${
+                v_errors?.value2?.message ? "border-red-500" : "border-gray-300"
+              } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+            />
+            <label className="text-red-700">{v_errors?.value2?.message}</label>
+          </div>
+
+          <ChildSample control={v_control} register={v_register} errors={v_errors} />
+
+          <button
+            type="submit"
+            className="mt-5 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400"
+          >
+            Validate
+          </button>
         </form>
 
         {submittedData && (
